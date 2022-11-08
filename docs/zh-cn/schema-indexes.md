@@ -139,9 +139,9 @@ func Do(ctx context.Context, client *ent.Client) error {
 
 完整示例请参阅 [GitHub](https://github.com/ent/ent/tree/master/examples/edgeindex).
 
-## Index On Edge Fields
+## 边(Edge)上索引
 
-Currently `Edges` columns are always added after `Fields` columns. However, some indexes require these columns to come first in order to achieve specific optimizations. You can work around this problem by making use of [Edge Fields](schema-edges#edge-field).
+目前 `Edges` 字段后面通常跟着 `Fields` 字段. 然而复合索引需要考虑顺序， 查看 [Edge Fields](schema-edges#edge-field)了解更多.
 
 ```go
 // Card holds the schema definition for the Card entity.
@@ -174,9 +174,9 @@ func (Card) Indexes() []ent.Index {
 }
 ```
 
-## Dialect Support
+## 方言支持 (Dialect Support)
 
-Dialect specific features are allowed using [annotations](schema-annotations.md). For example, in order to use [index prefixes](https://dev.mysql.com/doc/refman/8.0/en/column-indexes.html#column-indexes-prefix) in MySQL, use the following configuration:
+Dialect 功能需要配合注解 [annotations](schema-annotations.md). 例如为了实现在 Mysql 中的 [索引前缀](https://dev.mysql.com/doc/refman/8.0/en/column-indexes.html#column-indexes-prefix)， 需要如下配置 :
 
 ```go
 // Indexes of the User.
@@ -193,7 +193,7 @@ func (User) Indexes() []ent.Index {
 }
 ```
 
-The code above generates the following SQL statements:
+上面的代码将会生成如下 Sql 语句:
 
 ```sql
 CREATE INDEX `users_description` ON `users`(`description`(128))
@@ -201,9 +201,9 @@ CREATE INDEX `users_description` ON `users`(`description`(128))
 CREATE INDEX `users_c1_c2_c3` ON `users`(`c1`(100), `c2`(200), `c3`)
 ```
 
-## Atlas Support
+## Atlas 支持（Atlas Support）
 
-Starting with v0.10, Ent running migration with [Atlas](https://github.com/ariga/atlas). This option provides more control on indexes such as, configuring their types or define indexes in a reverse order.
+从 v0.10 开始 Ent 使用 Atlas 进行迁移  [Atlas](https://github.com/ariga/atlas). 它将提供更多对索引的配置, 配置他们的类型或顺序.
 
 ```go
 func (User) Indexes() []ent.Index {
@@ -214,8 +214,8 @@ func (User) Indexes() []ent.Index {
             Annotation(entsql.DescColumns("c1", "c2")),
         index.Fields("c4").
             Annotations(entsql.IndexType("HASH")),
-        // Enable FULLTEXT search on MySQL,
-        // and GIN on PostgreSQL.
+        // 在 MYSQL 启用 FULLTEXT 搜索 ,
+        // 和 GIN 在 PostgreSQL 中.
         index.Fields("c5").
             Annotations(
                 entsql.IndexTypes(map[string]string{
@@ -223,13 +223,13 @@ func (User) Indexes() []ent.Index {
                     dialect.Postgres: "GIN",
                 }),
             ),
-        // For PostgreSQL, we can include in the index
-        // non-key columns.
+        // 对于 PostgreSQL, 我们可以包含索引
+        // non-key 字段.
         index.Fields("workplace").
             Annotations(
                 entsql.IncludeColumns("address"),
             ),
-        // Define a partial index on SQLite and PostgreSQL.
+        // 定义部分索引在 SQLite 和 PostgreSQL 中.
         index.Fields("nickname").
             Annotations(
                 entsql.IndexWhere("active"),
@@ -238,7 +238,7 @@ func (User) Indexes() []ent.Index {
 }
 ```
 
-The code above generates the following SQL statements:
+上面的代码将生成如下SQL语句:
 
 ```sql
 CREATE INDEX `users_c1` ON `users` (`c1` DESC)
@@ -261,9 +261,9 @@ CREATE INDEX "user_nickname" ON "users" ("nickname") WHERE "active"
 ```
 
 
-## Storage Key
+## 存储名称 （Storage Key）
 
-Like Fields, custom index name can be configured using the `StorageKey` method. It's mapped to a index name in SQL dialects.
+类似 Fields, 自定义索引名称使用 `StorageKey` 方法. 它将会映射到数据库中.
 
 ```go
 func (User) Indexes() []ent.Index {
