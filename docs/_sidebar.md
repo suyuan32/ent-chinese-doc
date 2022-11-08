@@ -29,6 +29,6 @@
       * [GraphQL集成](zh-cn/graphql.md)
       * [整合sql.DB](zh-cn/sql-integration.md)
       * [测试](zh-cn/testing.md)
-      * [常见问图](zh-cn/faq.md)
+      * [常见问题](zh-cn/faq.md)
       * [特性](zh-cn/features.md)
       * [生成schema](zh-cn/generating-ent-schemas.md)

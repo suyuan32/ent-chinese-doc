@@ -371,9 +371,9 @@ func (User) Mixin() []ent.Mixin {
 
 #### 如何使用全局自定义XID作为唯一ID?
 
-Package [xid](https://github.com/rs/xid) is a globally unique ID generator library that uses the [Mongo Object ID](https://docs.mongodb.org/manual/reference/object-id/) algorithm to generate a 12 byte, 20 character ID with no configuration. The xid package comes with [database/sql](https://pkg.go.dev/database/sql) `sql.Scanner` and `driver.Valuer` interfaces required by Ent for serialization.
+[xid](https://github.com/rs/xid) 是一个全局唯一ID生成库， 使用[Mongo Object ID](https://docs.mongodb.org/manual/reference/object-id/) 算法无需配置即可生成12字节，20个字符的 ID . xid 来自于 [database/sql](https://pkg.go.dev/database/sql) `sql.Scanner` 和 `driver.Valuer` 接口。
 
-To store an XID in any string field use the [GoType](schema-fields.md#go-type) schema configuration:
+要存储 XID 在 string 字段需要  [GoType](schema-fields.md#go-type) 配置:
 
 ```go
 // Fields of type T.
@@ -386,7 +386,7 @@ func (T) Fields() []ent.Field {
 }
 ```
 
-Or as a reusable [Mixin](schema-mixin.md) across multiple schemas:
+或者一个可重用的 [Mixin](schema-mixin.md) :
 
 ```go
 package schema
@@ -426,11 +426,11 @@ func (User) Mixin() []ent.Mixin {
 }
 ```
 
-In order to use extended identifiers (XIDs) with gqlgen, follow the configuration mentioned in the [issue tracker](https://github.com/ent/ent/issues/1526#issuecomment-831034884).
+为了在 gqlgen 中使用扩展标识符 (XID), 请使用在 [issue tracker](https://github.com/ent/ent/issues/1526#issuecomment-831034884) 的配置.
 
-#### How to define a spatial data type field in MySQL?
+#### 如何在MySQL中定义一个特定的数据类型?
 
-The [GoType](schema-fields.md#go-type) and the [SchemaType](schema-fields.md#database-type) options allow users to define database-specific fields. For example, in order to define a [`POINT`](https://dev.mysql.com/doc/refman/8.0/en/spatial-type-overview.html) field, use the following configuration:
+[GoType](schema-fields.md#go-type) 和 [SchemaType](schema-fields.md#database-type) 选项允许用户定义特定于数据库的字段. 例如为了定义 [`POINT`](https://dev.mysql.com/doc/refman/8.0/en/spatial-type-overview.html) 字段, 使用以下的配置:
 
 ```go
 // Fields of the Location.
@@ -447,65 +447,65 @@ func (Location) Fields() []ent.Field {
 package schema
 
 import (
-    "database/sql/driver"
-    "fmt"
+	"database/sql/driver"
+	"fmt"
 
-    "entgo.io/ent/dialect"
-    "entgo.io/ent/dialect/sql"
-    "github.com/paulmach/orb"
-    "github.com/paulmach/orb/encoding/wkb"
+	"entgo.io/ent/dialect"
+	"entgo.io/ent/dialect/sql"
+	"github.com/paulmach/orb"
+	"github.com/paulmach/orb/encoding/wkb"
 )
 
-// A Point consists of (X,Y) or (Lat, Lon) coordinates
-// and it is stored in MySQL the POINT spatial data type.
+// Point 一个点由 (X,Y) 或 (Lat, Lon) 组成
+// 存在  MySQL 中的 POINT 是一个特殊的数据类型.
 type Point [2]float64
 
-// Scan implements the Scanner interface.
+// Scan 实现了 Scanner 接口
 func (p *Point) Scan(value any) error {
-    bin, ok := value.([]byte)
-    if !ok {
-        return fmt.Errorf("invalid binary value for point")
-    }
-    var op orb.Point
-    if err := wkb.Scanner(&op).Scan(bin[4:]); err != nil {
-        return err
-    }
-    p[0], p[1] = op.X(), op.Y()
-    return nil
+	bin, ok := value.([]byte)
+	if !ok {
+		return fmt.Errorf("invalid binary value for point")
+	}
+	var op orb.Point
+	if err := wkb.Scanner(&op).Scan(bin[4:]); err != nil {
+		return err
+	}
+	p[0], p[1] = op.X(), op.Y()
+	return nil
 }
 
-// Value implements the driver Valuer interface.
+// Value 实现了 Valuer 接口.
 func (p Point) Value() (driver.Value, error) {
-    op := orb.Point{p[0], p[1]}
-    return wkb.Value(op).Value()
+	op := orb.Point{p[0], p[1]}
+	return wkb.Value(op).Value()
 }
 
-// FormatParam implements the sql.ParamFormatter interface to tell the SQL
-// builder that the placeholder for a Point parameter needs to be formatted.
+// FormatParam 实现了 sql.ParamFormatter 接口来告诉 SQL
+// 构造器 Point 参数的占位符需要格式化.
 func (p Point) FormatParam(placeholder string, info *sql.StmtInfo) string {
-    if info.Dialect == dialect.MySQL {
-        return "ST_GeomFromWKB(" + placeholder + ")"
-    }
-    return placeholder
+	if info.Dialect == dialect.MySQL {
+		return "ST_GeomFromWKB(" + placeholder + ")"
+	}
+	return placeholder
 }
 
-// SchemaType defines the schema-type of the Point object.
+// SchemaType 定义了点的 schema 类型.
 func (Point) SchemaType() map[string]string {
-    return map[string]string{
-        dialect.MySQL: "POINT",
-    }
+	return map[string]string{
+		dialect.MySQL: "POINT",
+	}
 }
 ```
 
-A full example exists in the [example repository](https://github.com/a8m/entspatial).
+完整的例子请查看 [example repository](https://github.com/a8m/entspatial).
 
 
-#### How to extend the generated models?
+#### 如何扩展生成的模型 ?
 
-Ent supports extending generated types (both global types and models) using custom templates. For example, in order to add additional struct fields or methods to the generated model, we can override the `model/fields/additional` template like in this [example](https://github.com/ent/ent/blob/dd4792f5b30bdd2db0d9a593a977a54cb3f0c1ce/examples/entcpkg/ent/template/static.tmpl).
+Ent 支持使用自定义模板为已生成的类型进行扩展 (包括全局类型和模型). 例如为了给生成的模型添加额外的数据结构或者方法, 我们可以重写 `model/fields/additional` 模板类似于 [example](https://github.com/ent/ent/blob/dd4792f5b30bdd2db0d9a593a977a54cb3f0c1ce/examples/entcpkg/ent/template/static.tmpl).
 
 
-If your custom fields/methods require additional imports, you can add those imports using custom templates as well:
+如果你的自定义字段或方法需要额外的导入, 你可以使用如下方法:
 
 ```gotemplate
 {{- define "import/additional/field_types" -}}
