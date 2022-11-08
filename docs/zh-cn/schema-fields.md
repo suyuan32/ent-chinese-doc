@@ -445,9 +445,9 @@ type User struct {
 }
 ```
 
-#### `Nillable` required fields
+#### `Nillable` 必要字段
 
-`Nillable` fields are also helpful for avoiding zero values in JSON marshaling for fields that have not been `Select`ed in the query. For example, a `time.Time` field.
+`Nillable` 字段同样有助与避免JSON反序列化遇到未被选择的空值， 如 `time.Time` 字段
 
 ```go
 // Fields of the task.
@@ -462,21 +462,21 @@ func (Task) Fields() []ent.Field {
 }
 ```
 
-The generated struct for the `Task` entity will be as follows:
+生成的 `Task` 实例如下:
 
 ```go title="ent/task.go"
 package ent
 
 // Task entity.
 type Task struct {
-    // CreatedAt holds the value of the "created_at" field.
+    // CreatedAt 存储 "created_at" 字段.
     CreatedAt time.Time `json:"created_at,omitempty"`
-    // NillableCreatedAt holds the value of the "nillable_created_at" field.
+    // NillableCreatedAt 存储 "nillable_created_at" 字段.
     NillableCreatedAt *time.Time `json:"nillable_created_at,omitempty"`
 }
 ```
 
-And the result of `json.Marshal` is:
+生成的序列 `json.Marshal` 如下:
 
 ```go
 b, _ := json.Marshal(Task{})
@@ -493,7 +493,7 @@ fmt.Printf("%s\n", b)
 
 ## Immutable 不可变的
 
-Immutable fields are fields that can be set only in the creation of the entity. i.e., no setters will be generated for the update builders of the entity.
+Immutable 字段只能在创建时设定，之后不能修改. 例如 在生成的update代码中将不会有 set 方法
 
 ```go {6}
 // Fields of the user.
@@ -507,7 +507,7 @@ func (User) Fields() []ent.Field {
 ```
 
 ## 唯一键
-Fields can be defined as unique using the `Unique` method. Note that unique fields cannot have default values.
+`Unique` 字段用于设定只能存储唯一值的字段. 注意使用 `Unique`后不能使用 `Default`.
 
 ```go {5}
 // Fields of the user.
@@ -519,9 +519,9 @@ func (User) Fields() []ent.Field {
 }
 ```
 
-## Comments
+## 注释
 
-A comment can be added to a field using the `.Comment()` method. This comment appears before the field in the generated entity code. Newlines are supported using the `\n` escape sequence.
+ `.Comment()` 用于添加注释. 这个注释将会先于实例结构生成. 使用 `\n` 换行.
 
 ```go
 // Fields of the user.
@@ -534,9 +534,9 @@ func (User) Fields() []ent.Field {
 }
 ```
 
-## Storage Key
+## 自定义字段
 
-Custom storage name can be configured using the `StorageKey` method. It's mapped to a column name in SQL dialects and to property name in Gremlin.
+使用 `StorageKey` 来设定自定义字段名. 它将被映射到数据库和Gremlin中.
 
 ```go
 // Fields of the user.
@@ -548,14 +548,14 @@ func (User) Fields() []ent.Field {
 }
 ```
 
-## Indexes
-Indexes can be defined on multi fields and some types of edges as well. However, you should note, that this is currently an SQL-only feature.
+## 索引
+索引可以添加在多个字段和边中. 注意这只能用在 SQL 类型的数据库中.
 
-Read more about this in the [Indexes](schema-indexes.md) section.
+查看更多 [索引](schema-indexes.md) .
 
-## Struct Tags
+## 结构标签
 
-Custom struct tags can be added to the generated entities using the `StructTag` method. Note that if this option was not provided, or provided and did not contain the `json` tag, the default `json` tag will be added with the field name.
+自定义 tag 可以用 `StructTag` 添加. 注意如果没有添加 `json` 标签或者为添加任何标签, 默认会自动创建 `json` 标签
 
 ```go
 // Fields of the user.
@@ -567,9 +567,9 @@ func (User) Fields() []ent.Field {
 }
 ```
 
-## Additional Struct Fields
+## 额外的结构字段
 
-By default, `ent` generates the entity model with fields that are configured in the `schema.Fields` method. For example, given this schema configuration:
+默认情况下 `ent` 只生成在 `schema.Fields` 设定的字段. 例如下面:
 
 ```go
 // User schema.
@@ -589,7 +589,7 @@ func (User) Fields() []ent.Field {
 }
 ```
 
-The generated model will be as follows:
+生成的代码为:
 
 ```go
 // User is the model entity for the User schema.
@@ -601,7 +601,7 @@ type User struct {
 }
 ```
 
-In order to add additional fields to the generated struct **that are not stored in the database**, use [external templates](code-gen.md/#external-templates). For example:
+为了添加额外的字段 **不存在数据库中**, 使用 [额外模板](code-gen.md/#external-templates). 例如:
 
 ```gotemplate
 {{ define "model/fields/additional" }}
@@ -612,7 +612,7 @@ In order to add additional fields to the generated struct **that are not stored 
 {{ end }}
 ```
 
-The generated model will be as follows:
+生成的代码为:
 
 ```go
 // User is the model entity for the User schema.
@@ -626,11 +626,11 @@ type User struct {
 }
 ```
 
-## Sensitive Fields
+## 敏感字段
 
-String fields can be defined as sensitive using the `Sensitive` method. Sensitive fields won't be printed and they will be omitted when encoding.
+String 字段可以使用 `Sensitive` 定义为敏感字段. 敏感字段将会不会被打印或者序列化到json中.
 
-Note that sensitive fields cannot have struct tags.
+注意使用 `Sensitive`  后不能再自定义字段名 (StructTag).
 
 ```go
 // User schema.
@@ -647,9 +647,9 @@ func (User) Fields() []ent.Field {
 }
 ```
 
-## Enum Fields
+## 枚举字段
 
-The `Enum` builder allows creating enum fields with a list of permitted values.
+ `Enum` 构造器允许使用一系列数据创建枚举字段.
 
 ```go
 // Fields of the User.
@@ -663,11 +663,11 @@ func (User) Fields() []ent.Field {
 }
 ```
 
-When a custom [`GoType`](#go-type) is being used, it is must be convertible to the basic `string` type or it needs to implement the [ValueScanner](https://pkg.go.dev/entgo.io/ent/schema/field#ValueScanner) interface.
+当一个自定义 [`GoType`](#go-type) 被使用, 他必须被转化成基本类型 `string` 或者实现 [ValueScanner](https://pkg.go.dev/entgo.io/ent/schema/field#ValueScanner) 接口.
 
-The [EnumValues](https://pkg.go.dev/entgo.io/ent/schema/field#EnumValues) interface is also required by the custom Go type to tell Ent what are the permitted values of the enum.
+[EnumValues](https://pkg.go.dev/entgo.io/ent/schema/field#EnumValues) 接口还需要 GoType 告诉 Ent 哪些字段是被允许的.
 
-The following example shows how to define an `Enum` field with a custom Go type that is convertible to `string`:
+下面例子展示了 `Enum` 字段使用 GoType 转化成 `string`:
 
 ```go
 // Fields of the User.
@@ -682,7 +682,7 @@ func (User) Fields() []ent.Field {
 }
 ```
 
-Implement the [EnumValues](https://pkg.go.dev/entgo.io/ent/schema/field#EnumValues) interface.
+实现 [EnumValues](https://pkg.go.dev/entgo.io/ent/schema/field#EnumValues) 接口.
 ```go
 package property
 
@@ -702,7 +702,7 @@ func (Shape) Values() (kinds []string) {
 }
 
 ```
-The following example shows how to define an `Enum` field with a custom Go type that is not convertible to `string`, but it implements the [ValueScanner](https://pkg.go.dev/entgo.io/ent/schema/field#ValueScanner) interface:
+下面的 `Enum` 字段使用自定义 GoType 转化成 `string`, 但是实现的是 [ValueScanner](https://pkg.go.dev/entgo.io/ent/schema/field#ValueScanner) 接口:
 
 ```go
 // Fields of the User.
@@ -716,7 +716,7 @@ func (User) Fields() []ent.Field {
     }
 }
 ```
-Implement also the [ValueScanner](https://pkg.go.dev/entgo.io/ent/schema/field?tab=doc#ValueScanner) interface.
+实现 [ValueScanner](https://pkg.go.dev/entgo.io/ent/schema/field?tab=doc#ValueScanner) 接口.
 
 ```go
 package property
@@ -775,7 +775,8 @@ func (p *Level) Scan(val any) error {
 }
 ```
 
-Combining it all together:
+合在一起的效果:
+
 ```go
 // Fields of the User.
 func (User) Fields() []ent.Field {
@@ -784,17 +785,18 @@ func (User) Fields() []ent.Field {
         field.String("last_name"),
         field.Enum("size").
             Values("big", "small"),
-        // A convertible type to string.
+        // 一个自动转换的 Enum 字段.
         field.Enum("shape").
             GoType(property.Shape("")),
-        // Add conversion to and from string.
+        // 添加转换到一个 string 字段.
         field.Enum("level").
             GoType(property.Level(0)),
     }
 }
 ```
 
-After code generation usage is trivial:
+代码生成后使用非常简单:
+
 ```go 
 client.User.Create().
     SetFirstName("John").
@@ -809,11 +811,11 @@ fmt.Println(john)
 // User(id=1, first_name=John, last_name=Dow, size=small, shape=TRIANGLE, level=LOW)
 ```
 
-## Annotations
+## 注解
 
-`Annotations` is used to attach arbitrary metadata to the field object in code generation. Template extensions can retrieve this metadata and use it inside their templates.
+`Annotations` 用于在代码生成中将任意元数据附加到字段对象。 模板扩展可以检索此元数据并在其模板中使用它
 
-Note that the metadata object must be serializable to a JSON raw value (e.g. struct, map or slice).
+注意 metadata 必须序列化成 JSON 序列 (如. struct, map 或者 slice).
 
 ```go
 // User schema.
@@ -832,8 +834,8 @@ func (User) Fields() []ent.Field {
 }
 ```
 
-Read more about annotations and their usage in templates in the [template doc](templates.md#annotations).
+了解更多 [模板文档](templates.md#annotations).
 
-## Naming Convention
+## 命名转换
 
-By convention field names should use `snake_case`. The corresponding struct fields generated by `ent` will follow the Go convention of using `PascalCase`. In cases where `PascalCase` is desired, you can do so with the `StorageKey` or `StructTag` methods.
+默认命名方式为 `snake_case`.  `ent` 允许生成的代码为 `PascalCase` 格式. 如果想用 `PascalCase` 格式, 你可以使用 `StorageKey` 或 `StructTag` 方法自己设置.
