@@ -945,9 +945,9 @@ func Do(ctx context.Context, client *ent.Client) error {
 
 更多例子请参考 [GitHub](https://github.com/ent/ent/tree/master/entc/integration/edgefield)。
 
-#### Migration To Edge Fields
+#### 边(Edge)字段的迁移
 
-As mentioned in the [StorageKey](#storagekey) section, Ent configures edge storage-keys (e.g. foreign-keys) by the `edge.To`. Therefore, if you want to add a field to an existing edge (already exists in the database as a column), you need to set it up with the `StorageKey` option as follows:
+正如 [StorageKey](#storagekey) 里提到的, Ent 通过 `edge.To` 配置边的字段 (如. 外键（foreign-keys）) . 因此如果你想添加一个已存在的字段成为边的字段, 你需要使用 `StorageKey` 选项进行配置:
 
 ```diff
 // Fields of the Post.
@@ -969,7 +969,7 @@ func (Post) Edges() []ent.Edge {
 }
 ```
 
-Alternatively, this option can be configured on the edge-field instead:
+或者配置它在 edge-field :
 
 ```diff
 // Fields of the Post.
@@ -982,7 +982,7 @@ func (Post) Fields() []ent.Field {
 }
 ```
 
-If you're not sure how the foreign-key was named before using the edge-field option, check out the generated schema description in your project: `<project>/ent/migrate/schema.go`.
+如果你不确定外键的名称, 请检查你项目里的: `<project>/ent/migrate/schema.go`.
 
 ## Required
 
@@ -1002,30 +1002,29 @@ func (Card) Edges() []ent.Edge {
 
 就像上面的示例，如果没有所有者就不能创建一个卡的实体。
 
-:::info Note that, starting with [v0.10](https://github.com/ent/ent/releases/tag/v0.10.0), foreign key columns are created as `NOT NULL` in the database for required edges that are not [self-reference](#o2m-same-type). In order to migrate existing foreign key columns, use the [Atlas Migration](migrate.md#atlas-integration) option. :::
+:::注意 ： 从[v0.10](https://github.com/ent/ent/releases/tag/v0.10.0)版本开始, 外键在必须的边中默认为非空 `NOT NULL`， [自己引用自己](#o2m-same-type). 为了迁移已存在的外键, 使用 [Atlas Migration](migrate.md#atlas-integration) 选项. :::
 
 ## 存储字段
 
-By default, Ent configures edge storage-keys by the edge-owner (the schema that holds the `edge.To`), and not the by back-reference (`edge.From`). This is because back-references are optional and can be removed.
+默认情况下 Ent 通过边的所有者配置边的 storage-keys (schema 里有 `edge.To` ), 而不是反向引用 (`edge.From`). 因为反向引用是可选的，可以被删除.
 
-In order to use custom storage configuration for edges, use the `StorageKey` method as follows:
+为了使用自定义存储字段， 使用 `StorageKey` 方法:
 
 ```go
 // Edges of the User.
 func (User) Edges() []ent.Edge {
     return []ent.Edge{
         edge.To("pets", Pet.Type).
-            // Set the column name in the "pets" table for O2M relationship.
+            // 设定字段名在 "pets" 表实现一对多的关系.
             StorageKey(edge.Column("owner_id")),
         edge.To("cars", Car.Type).
-            // Set the symbol of the foreign-key constraint for O2M relationship.
+            // 设定外键实现一对多的关系.
             StorageKey(edge.Symbol("cars_owner_id")),
         edge.To("friends", User.Type).
-            // Set the join-table, and the column names for a M2M relationship.
+            // 设定中间表实现多对多的关系.
             StorageKey(edge.Table("friends"), edge.Columns("user_id", "friend_id")),
         edge.To("groups", Group.Type).
-            // Set the join-table, its column names and the symbols
-            // of the foreign-key constraints for M2M relationship.
+            // 设定中间表及表中的字段， 实现多对多关系
             StorageKey(
                 edge.Table("groups"),
                 edge.Columns("user_id", "group_id"),
@@ -1037,14 +1036,14 @@ func (User) Edges() []ent.Edge {
 
 ## 结构体标记
 
-Custom struct tags can be added to the generated entities using the `StructTag` method. Note that if this option was not provided, or provided and did not contain the `json` tag, the default `json` tag will be added with the field name.
+使用 `StructTag` 设定自定义结构名称. 注意如果没有添加 `json` 标签或者为添加任何标签, 默认会自动创建 `json` 标签
 
 ```go
 // Edges of the User.
 func (User) Edges() []ent.Edge {
     return []ent.Edge{
         edge.To("pets", Pet.Type).
-            // Override the default json tag "pets" with "owner" for O2M relationship.
+            // 覆盖默认的Json 标签， "pets" 和 "owner" 是一对多的关系.
             StructTag(`json:"owner"`),
     }
 }
@@ -1052,15 +1051,15 @@ func (User) Edges() []ent.Edge {
 
 ## 索引
 
-Indexes can be defined on multi fields and some types of edges as well. However, you should note, that this is currently an SQL-only feature.
+索引可以添加在多个字段和边中. 注意这只能用在 SQL 类型的数据库中.
 
-Read more about this in the [Indexes](schema-indexes.md) section.
+ 了解更多 [Indexes](schema-indexes.md) .
 
 ## 注解
 
-`Annotations` is used to attach arbitrary metadata to the edge object in code generation. Template extensions can retrieve this metadata and use it inside their templates.
+`Annotations` 用于在代码生成中将任意元数据附加到字段对象。 模板扩展可以检索此元数据并在其模板中使用它
 
-Note that the metadata object must be serializable to a JSON raw value (e.g. struct, map or slice).
+注意 metadata 必须序列化成 JSON 序列 (如. struct, map 或者 slice).
 
 ```go
 // Pet schema.
@@ -1081,8 +1080,8 @@ func (Pet) Edges() []ent.Edge {
 }
 ```
 
-Read more about annotations and their usage in templates in the [template doc](templates.md#annotations).
+了解更多 [template doc](templates.md#annotations).
 
 ## 命名规范
 
-By convention edge names should use `snake_case`. The corresponding struct fields generated by `ent` will follow the Go convention of using `PascalCase`. In cases where `PascalCase` is desired, you can do so with the `StorageKey` or `StructTag` methods.
+默认命名方式为 `snake_case`.  `ent` 允许生成的代码为 `PascalCase` 格式. 如果想用 `PascalCase` 格式, 你可以使用 `StorageKey` 或 `StructTag` 方法自己设置.
