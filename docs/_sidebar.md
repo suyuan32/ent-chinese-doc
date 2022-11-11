@@ -11,7 +11,7 @@
   * 代码生成
       * [概述](zh-cn/code-gen.md)
       * [CRUD](zh-cn/crud.md)
-      * [图遍历(Graph Traversal)(待翻译)](zh-cn/traversals.md)
+      * [图遍历(Graph Traversal)](zh-cn/traversals.md)
       * [预加载(Eager Loading)](zh-cn/eager-load.md)
       * [事件钩子(Hooks)](zh-cn/hooks.md)
       * [隐私(Privacy)](zh-cn/privacy.md)

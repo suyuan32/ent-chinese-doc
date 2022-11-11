@@ -1,15 +1,15 @@
-For the purpose of the example, we'll generate the following graph:
+通过例子的展示, 我们将生成下面的图结构:
 
 
 ![er-traversal-graph](https://entgo.io/images/assets/er_traversal_graph.png)
 
-The first step is to generate the 3 schemas: `Pet`, `User`, `Group`.
+第一步是生成三个表: `Pet`, `User`, `Group`.
 
 ```console
 go run -mod=mod entgo.io/ent/cmd/ent init Pet User Group
 ```
 
-Add the necessary fields and edges for the schemas:
+添加必要的字段和边:
 
 `ent/schema/pet.go`
 
@@ -91,7 +91,7 @@ func (Group) Edges() []ent.Edge {
 }
 ```
 
-Let's write the code for populating the vertices and the edges to the graph:
+让我们编写用于将顶点和边填充到图中的代码：
 
 ```go
 func Gen(ctx context.Context, client *ent.Client) error {
@@ -150,11 +150,11 @@ func Gen(ctx context.Context, client *ent.Client) error {
 }
 ```
 
-Let's go over a few traversals, and show the code for them:
+让我们回顾一些遍历，并展示它们的代码:
 
 ![er-traversal-graph-gopher](https://entgo.io/images/assets/er_traversal_graph_gopher.png)
 
-The traversal above starts from a `Group` entity, continues to its `admin` (edge), continues to its `friends` (edge), gets their `pets` (edge), gets each pet's `friends` (edge), and requests their owners.
+上面的遍历从 `Group` 实体开始, 然后到 `admin` (edge), 接着到朋友 `friends` (edge), 获得他们的宠物 `pets` (edge), 然后获得宠物的朋友 pet's `friends` (edge), 然后查询他们的主人.
 
 ```go
 func Traverse(ctx context.Context, client *ent.Client) error {
@@ -177,11 +177,11 @@ func Traverse(ctx context.Context, client *ent.Client) error {
 }
 ```
 
-What about the following traversal?
+下面的图表示什么？
 
 ![er-traversal-graph-gopher-query](https://entgo.io/images/assets/er_traversal_graph_gopher_query.png)
 
-We want to get all pets (entities) that have an `owner` (`edge`) that is a `friend` (edge) of some group `admin` (edge).
+我们想获得有一个主人(owner)是某个Group的朋友(Friend)的所有宠物(pets).
 
 ```go
 func Traverse(ctx context.Context, client *ent.Client) error {
@@ -205,4 +205,4 @@ func Traverse(ctx context.Context, client *ent.Client) error {
 }
 ```
 
-The full example exists in [GitHub](https://github.com/ent/ent/tree/master/examples/traversal).
+完整的例子请查看 [GitHub](https://github.com/ent/ent/tree/master/examples/traversal).

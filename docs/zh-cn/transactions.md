@@ -161,9 +161,9 @@ func Do(ctx context.Context, client *ent.Client) error {
 }
 ```
 
-## Isolation Levels
+## 隔离级别
 
-Some drivers support tweaking a transaction's isolation level. For example, with the [sql](sql-integration.md) driver, you can do so with the `BeginTx` method.
+一些驱动程序支持调整事务的隔离级别。 如 [sql](sql-integration.md) 驱动, 你可以使用 `BeginTx` 方法实现.
 
 ```go
 tx, err := client.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelRepeatableRead})

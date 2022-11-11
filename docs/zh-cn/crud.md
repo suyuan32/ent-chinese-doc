@@ -433,7 +433,7 @@ _, err := client.File.
     Exec(ctx)
 ```
 
-## 更变
+## 更新或创建 (Upsert)
 
 每个生成的节点类型都有突变类型。 例如，所有的 [`User` 构造器](crud.md#create-an-entity)， 共用同一个生成的 `UserMutation` 对象。 并且，所有构造器类型都实现了通用的 <a target="_blank" href="https://pkg.go.dev/entgo.io/ent?tab=doc#Mutation"> `ent.Mutation` </a> 接口。
 
