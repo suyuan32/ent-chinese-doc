@@ -1,4 +1,4 @@
-**ent** 是一个简单但功能强大的 Go 实体框架，它可以轻松构建和维护具有大型数据模型的应用程序，并遵循以下原则：
+#### **ent** 是一个简单但功能强大的 Go 实体框架，它可以轻松构建和维护具有大型数据模型的应用程序，并遵循以下原则：
 
 - 简单地使用数据库结构作为图结构。
 - 使用Go代码定义结构。
@@ -12,7 +12,7 @@
 
 如果你的项目目录在 [GOPATH](https://github.com/golang/go/wiki/GOPATH) 之外 或 不熟悉 GOPATH， 可以为项目设置 [Go module](https://github.com/golang/go/wiki/Modules#quick-start)：
 
-```console
+```shell
 go mod init <project>
 ```
 
@@ -20,13 +20,13 @@ go mod init <project>
 
 进入你项目的根目录，然后运行：
 
-```console
+```shell
 go run -mod=mod entgo.io/ent/cmd/ent init User
 ```
 
 以上的命令会在`<project>/ent/schema/`目录下产生`User`的数据模式（数据模式是数据库系统设计中的专业术语，若对该部分有任何理解问题，请查阅数据库系统的相关书籍）：
 
-```go title="<project>/ent/schema/user.go"
+```go
 
 package schema
 
@@ -51,7 +51,7 @@ func (User) Edges() []ent.Edge {
 
 为`User` 模式添加两个字段：
 
-```go title="<project>/ent/schema/user.go"
+```go
 
 package schema
 
@@ -73,12 +73,12 @@ func (User) Fields() []ent.Field {
 
 从项目的根目录下像如下命令那样，运行`go generate`：
 
-```go
+```shell
 go generate ./ent
 ```
 
 上述命令，将产生如下的文件：
-```console {12-20}
+```text
 ent
 ├── client.go
 ├── config.go
@@ -105,16 +105,9 @@ ent
 
 首先，创建一个`ent.Client`。
 
-<Tabs
-defaultValue="sqlite"
-values={[
-{label: 'SQLite', value: 'sqlite'},
-{label: 'PostgreSQL', value: 'postgres'},
-{label: 'MySQL', value: 'mysql'},
-]}>
-<TabItem value="sqlite">
+> Sqlite3
 
-```go title="<project>/start/start.go"
+```go
 package main
 
 import (
@@ -139,10 +132,9 @@ func main() {
 }
 ```
 
-</TabItem>
-<TabItem value="postgres">
+> Postgres
 
-```go title="<project>/start/start.go"
+```go
 package main
 
 import (
@@ -167,10 +159,9 @@ func main() {
 }
 ```
 
-</TabItem>
-<TabItem value="mysql">
+> Mysql
 
-```go title="<project>/start/start.go"
+```go
 package main
 
 import (
@@ -195,12 +186,10 @@ func main() {
 }
 ```
 
-</TabItem>
-</Tabs>
 
 现在，我们准备创建我们的用户。 让我们写一个 `CreateUser` 函数，比如：
 
-```go title="<project>/start/start.go"
+```go
 func CreateUser(ctx context.Context, client *ent.Client) (*ent.User, error) {
     u, err := client.User.
         Create().
@@ -219,7 +208,7 @@ func CreateUser(ctx context.Context, client *ent.Client) (*ent.User, error) {
 
 `ent` 为每个实体结构生成一个package，包含其条件、默认值、验证器、有关存储元素的附加信息 (字段名、主键等) 。
 
-```go title="<project>/start/start.go"
+```go
 package main
 
 import (
@@ -248,13 +237,13 @@ func QueryUser(ctx context.Context, client *ent.Client) (*ent.User, error) {
 ## 添加你的第一条边 (关系)
 在这部分教程中，我们想声明一条到另一个 实体 的 边(关系) 。 让我们另外创建2个实体，分别为 `Car` 和 `Group`，并添加一些字段。 我们使用 `ent` CLI 生成初始的结构：
 
-```console
+```shell
 go run -mod=mod entgo.io/ent/cmd/ent init Car Group
 ```
 
 然后我们手动添加其他字段：
 
-```go title="<project>/ent/schema/car.go"
+```go
 // Fields of the Car.
 func (Car) Fields() []ent.Field {
     return []ent.Field{
@@ -264,7 +253,7 @@ func (Car) Fields() []ent.Field {
 }
 ```
 
-```go title="<project>/ent/schema/group.go"
+```go
 // Fields of the Group.
 func (Group) Fields() []ent.Field {
     return []ent.Field{
@@ -281,7 +270,7 @@ func (Group) Fields() []ent.Field {
 
 让我们将 `"cars"` 关系添加到 `User` 结构中，并运行 `go generate ./ent` 。
 
-```go title="<project>/ent/schema/user.go"
+```go
 
 // Edges of the User.
 func (User) Edges() []ent.Edge {
@@ -293,7 +282,7 @@ func (User) Edges() []ent.Edge {
 
 作为示例，我们创建2辆汽车并将它们添加到某个用户。
 
-```go title="<project>/start/start.go"
+```go
 
 import (
     "<project>/ent"
@@ -341,7 +330,7 @@ func CreateCars(ctx context.Context, client *ent.Client) (*ent.User, error) {
 ```
 想要查询 `cars` 边 (关系) 怎么办？ 请参考下面这样：
 
-```go title="<project>/start/start.go"
+```go
 import (
     "log"
 
@@ -377,7 +366,7 @@ func QueryCars(ctx context.Context, a8m *ent.User) error {
 
 让我们把一个名为 `owner` 的反向边添加到 `Car` 的结构中, 在 `User` 结构中引用它到 `cars` 关系 然后运行 `go generate ./ent`
 
-```go title="<project>/ent/schema/car.go"
+```go
 // Edges of the Car.
 func (Car) Edges() []ent.Edge {
     return []ent.Edge{
@@ -393,7 +382,7 @@ func (Car) Edges() []ent.Edge {
 ```
 我们继续使用用户和汽车，作为查询反向边的例子。
 
-```go title="<project>/start/start.go"
+```go
 import (
     "fmt"
     "log"
@@ -427,7 +416,7 @@ func QueryCarUsers(ctx context.Context, a8m *ent.User) error {
 
 如图所示，每个组实体可以**拥有许多**用户，而一个用户可以**关联到多个**组。 一个简单的 "多对多 "关系。 上图中，`Group` 结构是 `users` 关系的所有者， 而 `User` 实体对这个关系有一个名为 `groups` 的反向引用。 让我们在结构中定义这种关系。
 
-```go title="<project>/ent/schema/group.go"
+```go
 // Edges of the Group.
 func (Group) Edges() []ent.Edge {
    return []ent.Edge{
@@ -436,7 +425,7 @@ func (Group) Edges() []ent.Edge {
 }
 ```
 
-```go title="<project>/ent/schema/user.go"
+```go
 // Edges of the User.
 func (User) Edges() []ent.Edge {
    return []ent.Edge{
@@ -451,7 +440,7 @@ func (User) Edges() []ent.Edge {
 ```
 
 在schema目录的上级目录中运行`ent`来重新生成资源文件。
-```console
+```shell
 go generate ./ent
 ```
 
@@ -462,7 +451,7 @@ go generate ./ent
 ![re-graph](https://entgo.io/images/assets/re_graph_getting_started.png)
 
 
-```go title="<project>/start/start.go"
+```go
 func CreateGraph(ctx context.Context, client *ent.Client) error {
     // 首先创建用户
     a8m, err := client.User.
@@ -538,7 +527,7 @@ func CreateGraph(ctx context.Context, client *ent.Client) error {
 
 1. 获取名为 "GitHub" 的群组内所有用户的汽车。
 
-    ```go title="<project>/start/start.go"
+    ```go
     import (
         "log"
 
@@ -564,7 +553,7 @@ func CreateGraph(ctx context.Context, client *ent.Client) error {
 
 2. 修改上面的查询，遍历 *Ariel* 用户。
 
-    ```go title="<project>/start/start.go"
+    ```go
     import (
         "log"
 
@@ -602,7 +591,7 @@ func CreateGraph(ctx context.Context, client *ent.Client) error {
 
 3. 获取所有拥有用户的组 (通过额外 [look-aside] 断言查询)：
 
-    ```go title="<project>/start/start.go"
+    ```go
     import (
         "log"
 
