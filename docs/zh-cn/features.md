@@ -45,35 +45,35 @@ func main() {
 
 ## 特性列表
 
-### Auto-Solve Merge Conflicts
+### 自动解决合并冲突
 
-The `schema/snapshot` option tells `entc` (ent codegen) to store a snapshot of the latest schema in an internal package, and use it to automatically solve merge conflicts when user's schema can't be built.
+`schema/snapshot` 选项告诉 `entc` (ent codegen) 将最新模式的快照存储在内部包中，并在无法构建用户模式时使用它来自动解决合并冲突。
 
-This option can be added to a project using the `--feature schema/snapshot` flag, but please see [ent/ent/issues/852](https://github.com/ent/ent/issues/852) to get more context about it.
+可以使用“--feature schema/snapshot”标志将此选项添加到项目中，但请参阅 [ent/ent/issues/852](https://github.com/ent/ent/issues/852) 以 获得更多关于它的背景信息。
 
-### Privacy Layer
+### 隐私层
 
-The privacy layer allows configuring privacy policy for queries and mutations of entities in the database.
+隐私层允许为数据库中实体的查询和变更配置隐私策略。
 
-This option can be added to a project using the `--feature privacy` flag, and you can learn more about in the [privacy](privacy.md) documentation.
+可以使用 `--feature privacy` 标志将此选项添加到项目中，您可以在 [privacy](privacy.md) 文档中了解更多信息。
 
-### EntQL Filtering
+### EntQL过滤
 
-The `entql` option provides a generic and dynamic filtering capability at runtime for the different query builders.
+`entql` 选项在运行时为不同的查询构建器提供通用和动态过滤功能。
 
-This option can be added to a project using the `--feature entql` flag, and you can learn more about in the [privacy](privacy.md#multi-tenancy) documentation.
+可以使用 `--feature entql` 标志将此选项添加到项目中，您可以在 [privacy](privacy.md#multi-tenancy) 文档中了解更多信息。
 
-### Named Edges
+### 命名边（Named Edges）
 
-The `namedges` option provides an API for preloading edges with custom names.
+`namedges` 选项提供了一个 API，用于使用自定义名称预加载边缘。
 
-This option can be added to a project using the `--feature namedges` flag, and you can learn more about in the [Eager Loading](eager-load.mdx) documentation.
+可以使用 `--feature namedges` 标志将此选项添加到项目中，您可以在 [Eager Loading](eager-load.mdx) 文档中了解更多信息。
 
-### Schema Config
+### Schema 配置
 
-The `sql/schemaconfig` option lets you pass alternate SQL database names to models. This is useful when your models don't all live under one database and are spread out across different schemas.
+`sql/schemaconfig` 选项允许您将备用 SQL 数据库名称传递给模型。 当您的模型并非都在一个数据库下并且分布在不同的schema中时，这很有用。
 
-This option can be added to a project using the `--feature sql/schemaconfig` flag. Once you generate the code, you can now use a new option as such:
+可以使用 --feature sql/schemaconfig 标志将此选项添加到项目中。 生成代码后，您现在可以使用一个新选项：
 
 ```go
 c, err := ent.Open(dialect, conn, ent.AlternateSchema(ent.SchemaConfig{
@@ -84,11 +84,11 @@ c.User.Query().All(ctx) // SELECT * FROM `usersdb`.`users`
 c.Car.Query().All(ctx)  // SELECT * FROM `carsdb`.`cars`
 ```
 
-### Row-level Locks
+### 行级锁
 
-The `sql/lock` option lets configure row-level locking using the SQL `SELECT ... FOR {UPDATE | SHARE}` syntax.
+`sql/lock` 选项允许使用 SQL `SELECT ... FOR {UPDATE | 分享}`语法。
 
-This option can be added to a project using the `--feature sql/lock` flag.
+可以使用 --feature sql/lock 标志将此选项添加到项目中。
 
 ```go
 tx, err := client.Tx(ctx)
@@ -110,11 +110,11 @@ tx.Pet.Query().
     Only(ctx)
 ```
 
-### Custom SQL Modifiers
+### 自定义 SQL 修饰符
 
-The `sql/modifier` option lets add custom SQL modifiers to the builders and mutate the statements before they are executed.
+`sql/modifier` 选项允许向构建器添加自定义 SQL 修饰符，并在语句执行之前对其进行修改。
 
-This option can be added to a project using the `--feature sql/modifier` flag.
+可以使用 --feature sql/modifier 标志将此选项添加到项目中。
 
 #### Modify Example 1
 
@@ -127,13 +127,13 @@ client.Pet.
     IntX(ctx)
 ```
 
-The above code will produce the following SQL query:
+上面的代码将产生以下 SQL 查询：
 
 ```sql
 SELECT SUM(LENGTH(name)) FROM `pet`
 ```
 
-#### Modify Example 2
+#### 修改示例 2
 
 ```go
 var p1 []struct {
@@ -149,13 +149,13 @@ client.Pet.Query().
     ScanX(ctx, &p1)
 ```
 
-The above code will produce the following SQL query:
+上面的代码将产生以下 SQL 查询：
 
 ```sql
 SELECT `pet`.*, LENGTH(name) FROM `pet` ORDER BY `pet`.`id` ASC
 ```
 
-#### Modify Example 3
+#### 修改示例 3
 
 ```go
 var v []struct {
@@ -182,7 +182,7 @@ client.User.
     ScanX(ctx, &v)
 ```
 
-The above code will produce the following SQL query:
+上面的代码将产生以下 SQL 查询：
 
 ```sql
 SELECT
@@ -199,7 +199,7 @@ ORDER BY
     DATE(created_at) DESC
 ```
 
-#### Modify Example 4
+#### 修改示例 4
 
 ```go
 var gs []struct {
@@ -225,7 +225,7 @@ client.Group.Query().
     ScanX(ctx, &gs)
 ```
 
-The above code will produce the following SQL query:
+上面的代码将产生以下 SQL 查询：
 
 ```sql
 SELECT
@@ -242,7 +242,7 @@ ORDER BY
 ```
 
 
-#### Modify Example 5
+#### 修改示例 5
 
 ```go
 client.User.Update().
@@ -252,13 +252,13 @@ client.User.Update().
     ExecX(ctx)
 ```
 
-The above code will produce the following SQL query:
+上面的代码将产生以下 SQL 查询：
 
 ```sql
 UPDATE `users` SET `name` = UPPER(`name`)
 ```
 
-#### Modify Example 6
+#### 修改示例 6
 
 ```go
 client.User.Update().
@@ -271,15 +271,15 @@ client.User.Update().
     ExecX(ctx)
 ```
 
-The above code will produce the following SQL query:
+上面的代码将产生以下 SQL 查询：
 
 ```sql
 UPDATE `users` SET `id` = `id` + 1 ORDER BY `id` DESC
 ```
 
-#### Modify Example 7
+#### 修改示例 7
 
-Append elements to the `values` array in a JSON column:
+上面的代码将产生以下 SQL 查询：
 
 ```go
 client.User.Update().
@@ -289,7 +289,7 @@ client.User.Update().
     ExecX(ctx)
 ```
 
-The above code will produce the following SQL query:
+上面的代码将产生以下 SQL 查询：
 
 ```sql
 UPDATE `users` SET `tags` = CASE
@@ -299,9 +299,9 @@ UPDATE `users` SET `tags` = CASE
     WHERE `id` = ?
 ```
 
-### SQL Raw API
+### SQL原始API
 
-The `sql/execquery` option allows executing statements using the `ExecContext`/`QueryContext` methods of the underlying driver. For full documentation, see: [DB.ExecContext](https://pkg.go.dev/database/sql#DB.ExecContext), and [DB.QueryContext](https://pkg.go.dev/database/sql#DB.QueryContext).
+`sql/execquery` 选项允许使用底层驱动程序的 `ExecContext`/`QueryContext` 方法执行语句。 有关完整文档，请参阅：[DB.ExecContext](https://pkg.go.dev/database/sql#DB.ExecContext) 和 [DB.QueryContext](https://pkg.go.dev/database/ sql#DB.QueryContext）。
 
 ```go
 // From ent.Client.
@@ -323,13 +323,13 @@ if _, err := tx.ExecContext("SAVEPOINT user_created"); err != nil {
 // ...
 ```
 
-:::warning Note Statements executed using `ExecContext`/`QueryContext` do not go through Ent, and may skip fundamental layers in your application such as hooks, privacy (authorization), and validators. :::
+> 注意 使用 `ExecContext`/`QueryContext` 执行的语句不会通过 Ent，并且可能会跳过应用程序中的基础层，例如挂钩、隐私（授权）和验证器。 
 
-### Upsert
+### 更新插入(Upsert)
 
-The `sql/upsert` option lets configure upsert and bulk-upsert logic using the SQL `ON CONFLICT` / `ON DUPLICATE KEY` syntax. For full documentation, go to the [Upsert API](crud.mdx#upsert-one).
+`sql/upsert` 选项允许使用 SQL `ON CONFLICT` / `ON DUPLICATE KEY` 语法配置 upsert 和 bulk-upsert 逻辑。 如需完整文档，请转到 [Upsert API](crud.mdx#upsert-one)。
 
-This option can be added to a project using the `--feature sql/upsert` flag.
+可以使用 --feature sql/upsert 标志将此选项添加到项目中。
 
 ```go
 // Use the new values that were set on create.

@@ -25,10 +25,10 @@
       * [支持的数据库](zh-cn/dialects.md)
   * 杂项
       * [模板(Template)](zh-cn/templates.md)
-      * [扩展(待翻译)](zh-cn/extension.md)
+      * [扩展](zh-cn/extension.md)
       * [GraphQL集成](zh-cn/graphql.md)
       * [整合sql.DB](zh-cn/sql-integration.md)
       * [测试](zh-cn/testing.md)
       * [常见问题](zh-cn/faq.md)
-      * [特性](zh-cn/features.md)
+      * [特性（官方扩展）](zh-cn/features.md)
       * [生成schema](zh-cn/generating-ent-schemas.md)

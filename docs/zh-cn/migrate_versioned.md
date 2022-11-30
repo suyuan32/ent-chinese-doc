@@ -1,17 +1,12 @@
----
-id: migrate_versioned
-title: Versioned Migrations
----
-
-If you are using the Atlas migration engine you are able to use the versioned migrations feature of it. Instead of applying the computed changes directly to the database, it will generate a set of migration files containing the necessary SQL statements to migrate the database. These files can then be edited to your needs and be applied by any tool you like (like golang-migrate, Flyway, liquibase).
+如果您使用的是 Atlas 迁移引擎，则可以使用它的版本化迁移功能。 它不会将计算的更改直接应用于数据库，而是生成一组迁移文件，其中包含迁移数据库所需的 SQL 语句。 然后可以根据您的需要编辑这些文件，并通过您喜欢的任何工具（如 golang-migrate、Flyway、liquibase）应用。
 
 ![atlas-versioned-migration-process](https://entgo.io/images/assets/migrate-atlas-versioned.png)
 
-## Configuration
+## 配置
 
-In order to have Ent make the necessary changes to your code, you have to enable this feature with one of the two options:
+为了让 Ent 对您的代码进行必要的更改，您必须使用以下两个选项之一启用此功能：
 
-1. If you are using the default go generate configuration, simply add the `--feature sql/versioned-migration` to the `ent/generate.go` file as follows:
+1. 如果您使用默认的 go generate 配置，只需添加 `--feature sql/versioned-migration` 到 `ent/generate.go` 文件中，如下:
 
 ```go
 package ent
@@ -19,7 +14,7 @@ package ent
 //go:generate go run -mod=mod entgo.io/ent/cmd/ent generate --feature sql/versioned-migration ./schema
 ```
 
-2. If you are using the code generation package (e.g. if you are using an Ent extension), add the feature flag as follows:
+2. 如果您使用的是代码生成包（例如，如果您使用的是 Ent 扩展），请按如下方式添加功能标志:
 
 ```go
 //go:build ignore
@@ -41,11 +36,11 @@ func main() {
 }
 ```
 
-## Generating Versioned Migration Files
+## 生成版本化迁移文件
 
-### From Client
+### 使用客户端(client)
 
-After regenerating the project, there will be an extra `Diff` method on the Ent client that you can use to inspect the connected database, compare it with the schema definitions and create sql statements needed to migrate the database to the graph.
+重新生成项目后，Ent 客户端上将有一个额外的 `Diff` 方法，您可以使用它来检查连接的数据库，将其与Schema定义进行比较，并创建将数据库迁移到图形所需的 sql 语句。
 
 ```go
 package main
@@ -80,11 +75,11 @@ func main() {
 }
 ```
 
-You can then create a new set of migration files by simply calling `go run -mod=mod main.go`.
+您只需调用 `go run -mod=mod main.go` 即可创建一组新的迁移文件
 
-### From Graph
+### 使用图 (Graph)
 
-You can also generate new migration files without an instantiated Ent client. This can be useful if you want to make the migration file creation part of a go generate workflow.
+您还可以在没有实例化的 Ent 客户端的情况下生成新的迁移文件。 如果你想让迁移文件创建成为 go generate 工作流的一部分，这会很有用。
 
 ```go
 package main
@@ -131,23 +126,23 @@ func main() {
 }
 ```
 
-## Apply Migrations
+## 执行迁移
 
-The Atlas migration engine does not support applying the migration files onto a database yet, therefore to manage and execute the generated migration files, you have to rely on an external tool (or execute them by hand). By default, Atlas generates one "up" and one "down" migration file for the computed diff. These files are compatible with the popular [golang-migrate/migrate](https://github.com/golang-migrate/migrate) package, and you can use that tool to manage the migrations in you deployments.
+Atlas 迁移引擎还不支持将迁移文件应用到数据库中，因此要管理和执行生成的迁移文件，您必须依赖外部工具（或手动执行）。 默认情况下，Atlas 为计算出的差异生成一个“Up”和一个“Down”迁移文件。 这些文件与 [golang-migrate/migrate](https://github.com/golang-migrate/migrate) 包兼容, 您可以使用该工具来管理部署中的迁移.
 
 ```shell
 migrate -source file://migrations -database mysql://root:pass@tcp(localhost:3306)/test up
 ```
 
-## Moving from Auto-Migration to Versioned Migrations
+## 从自动迁移到版本化迁移
 
-In case you already have an Ent application in production and want to switch over from auto migration to the new versioned migration, you need to take some extra steps.
+如果您在生产环境中已经有一个 Ent 应用程序并且想要从自动迁移切换到新版本迁移，您需要采取一些额外的步骤.
 
-1. Create an initial migration file (or several files if you want) reflecting the currently deployed state.
+1. 创建反映当前部署状态的初始迁移文件（或多个文件，如果需要）。
 
-   To do this make sure your schema definition is in sync with your deployed version. Then spin up an empty database and run the diff command once as described above. This will create the statements needed to create the current state of your schema graph.
+> 请确保您的Schema定义与您部署的版本一致。 然后启动一个空数据库执行 diff 命令一次。 这将生成创建当前状态Schema所需的语句。
 
-2. Configure the tool you use to manage migrations to consider this file as **applied**.
+2. 配置您用于管理迁移的工具以将此文件视为**已应用(Applied)**。
 
-   In case of `golang-migrate` this can be done by forcing your database version as described [here](https://github.com/golang-migrate/migrate/blob/master/GETTING_STARTED.md#forcing-your-database-version).
+> 在 `golang-migrate` 的情况下，这可以通过强制您的数据库版本为 [点此查看](https://github.com/golang-migrate/migrate/blob/master/GETTING_STARTED.md#forcing-your-database-version)来完成操作.
 

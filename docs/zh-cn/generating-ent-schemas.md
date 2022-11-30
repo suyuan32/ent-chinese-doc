@@ -1,12 +1,12 @@
-## Introduction
+## 概述
 
-To facilitate the creation of tooling that generates `ent.Schema`s programmatically, `ent` supports the manipulation of the `schema/` directory using the `entgo.io/contrib/schemast` package.
+为了方便创建以编程方式生成 ent.Schema 的工具，ent 支持使用 entgo.io/contrib/schemast 包操作 schema/ 目录。
 
 ## API
 
-### Loading
+### 载入
 
-In order to manipulate an existing schema directory we must first load it into a `schemast.Context` object:
+为了操作现有的架构目录，我们必须首先将其加载到 `schemast.Context` 对象中：
 
 ```go
 package main
@@ -29,9 +29,9 @@ func main() {
 }
 ```
 
-### Printing
+### 输出
 
-To print back out our context to a target directory, use `schemast.Print`:
+要将我们的上下文打印回目标目录，请使用 `schemast.Print`：
 
 ```go
 package main
@@ -54,9 +54,9 @@ func main() {
 }
 ```
 
-### Mutators
+### 变更器
 
-To mutate the `ent/schema` directory, we can use `schemast.Mutate`, which takes a list of `schemast.Mutator`s to apply to the context:
+要改变“ent/schema”目录，我们可以使用“schemast.Mutate”，它需要一个“schemast.Mutator”列表来应用于上下文：
 
 ```go
 package schemast
@@ -67,7 +67,7 @@ type Mutator interface {
 }
 ```
 
-Currently, only a single type of `schemast.Mutator` is implemented, `UpsertSchema`:
+目前，只实现了一种类型的 `schemast.Mutator`，`UpsertSchema`：
 
 ```go
 package schemast
@@ -83,7 +83,7 @@ type UpsertSchema struct {
 }
 ```
 
-To use it:
+使用它：
 
 ```go
 package main
@@ -122,7 +122,7 @@ func main() {
 }
 ```
 
-After running this program, observe two new files exist in the schema directory: `user.go` and `team.go`:
+运行这个程序后，可以看淡schema目录中存在两个新文件：`user.go` 和 `team.go`：
 
 ```go
 // user.go
@@ -173,16 +173,15 @@ func (Team) Annotations() []schema.Annotation {
 }
 ```
 
-### Working with Edges
+### 使用边(edge)
 
-Edges are defined in `ent` this way:
+边在 ent 中这样定义：
 
 ```go
 edge.To("edge_name", OtherSchema.Type)
 ```
 
-This syntax relies on the fact that the `OtherSchema` struct already exists when we define the edge so we can refer to its `Type` method. When we are generating schemas programmatically, obviously we need somehow to describe the edge to the code-generator before the type definitions exist. To do this you can do something like:
-
+这种语法依赖于这样一个事实，即当我们定义边缘时，`OtherSchema` 结构已经存在，因此我们可以引用它的 `Type` 方法。 当我们以编程方式生成schema时，显然我们需要在类型定义存在之前以某种方式向代码生成器描述边缘。 为此，您可以执行以下操作：
 ```go
 type placeholder struct {
     ent.Schema
@@ -201,11 +200,10 @@ func newEdgeTo(edgeName, otherType string) ent.Edge {
 }
 ```
 
-## Examples
+## 例子
 
-The `protoc-gen-ent` ([doc](https://github.com/ent/contrib/tree/master/entproto/cmd/protoc-gen-ent)) is a protoc plugin that programmatically generates `ent.Schema`s from .proto files, it uses the `schemast` to manipulate the target `schema` directory. To see how, [read the source code](https://github.com/ent/contrib/blob/master/entproto/cmd/protoc-gen-ent/main.go#L34).
+`protoc-gen-ent` ([doc](https://github.com/ent/contrib/tree/master/entproto/cmd/protoc-gen-ent)) 是一个以编程方式生成 `ent. Schema 来自 .proto 文件，它使用 schemast 来操作目标 schema 目录。 要查看如何，[阅读源代码](https://github.com/ent/contrib/blob/master/entproto/cmd/protoc-gen-ent/main.go#L34)。
 
-## Caveats
+## 注意事项
 
-`schemast` is still experimental, APIs are subject to change in the future. In addition, a small portion of the `ent.Field` definition API is unsupported at this point in time, to see a full list of unsupported features see the [source code](https://github.com/ent/contrib/blob/aed7a43a3e54550c1dd9a1a066ce1236b4bae56c/schemast/field.go#L158).
-
+`schemast` 仍处于实验阶段，API 将来可能会发生变化。 此外，一小部分“ent.Field”定义 API 目前不受支持，要查看不受支持功能的完整列表，请参阅 [源代码](https://github.com/ent/contrib/blob/aed7a43a3e54550c1dd9a1a066ce1236b4bae56c/schemast/field.go#L158)。

@@ -395,9 +395,9 @@ func renameColumnHook(next schema.Differ) schema.Differ {
 }
 ```
 
-#### `Apply` Hook Example
+#### `Apply` 钩子示例
 
-The `Apply` hook allows accessing and mutating the migration plan and its raw changes (SQL statements), but in addition to that it is also useful for executing custom SQL statements before or after the plan is applied. For example, changing a nullable column to non-nullable without a default value is not allowed by default. However, we can work around this using an `Apply` hook that `UPDATE`s all rows that contain `NULL` value in this column:
+`Apply` 钩子允许访问和修改迁移计划及其原始更改（SQL 语句），但除此之外，它对于在应用计划之前或之后执行自定义 SQL 语句也很有用。例如，默认情况下不允许将可空列更改为不带默认值的不可空列，但是，我们可以使用“Apply”挂钩来解决此问题，该挂钩“Update”此列中包含“NULL”值的所有行：
 
 ```go
 func main() {

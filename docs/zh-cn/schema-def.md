@@ -51,8 +51,8 @@ func (User) Indexes() []ent.Index {
 go run -mod=mod entgo.io/ent/cmd/ent init User Group
 ```
 
-:::note Please note, that some schema names (like `Client`) are not available due to [internal use](https://pkg.go.dev/entgo.io/ent/entc/gen#ValidSchemaName). You can circumvent reserved names by using an annotation as mentioned [here](schema-annotations.md#custom-table-name). :::
+> 注意有些Schema名称 (如 `Client`) 是不可用的，详情查看 [internal use](https://pkg.go.dev/entgo.io/ent/entc/gen#ValidSchemaName). 您可以使用上述注释来规避保留名称 [点此查看](schema-annotations.md#custom-table-name). 
 
 ## 它只是又一个 ORM
 
-If you are used to the definition of relations over edges, that's fine. The modeling is the same. You can model with `ent` whatever you can model with other traditional ORMs. There are many examples in this website that can help you get started in the [Edges](schema-edges) section.
+如果你习惯用边来定义关系，Ent可以很好的满足你的需求。 查看例子快速开始 [Edges](./zh-cn/schema-edges.md).
