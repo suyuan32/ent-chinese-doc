@@ -1,7 +1,7 @@
 * Ent 文档
     * 快速开始
       * [快速开始](zh-cn/getting-started.md)
-    * 结构（schema）
+    * 结构 | 模式（schema）
       * [概述](zh-cn/schema-def.md)
       * [字段(Field)](zh-cn/schema-fields.md)
       * [边(Edge)](zh-cn/schema-edges.md)
@@ -21,7 +21,7 @@
       * [分页和排序(Paging and order)](zh-cn/paging.md)
   * 迁移 (Migration)
       * [自动迁移(Automatic Migration)](zh-cn/migrate.md)
-      * [版本迁移(Automatic Migration)](zh-cn/migrate_versioned.md)
+      * [版本迁移(Versioned Migration)](zh-cn/migrate_versioned.md)
       * [支持的数据库](zh-cn/dialects.md)
   * 杂项
       * [模板(Template)](zh-cn/templates.md)
