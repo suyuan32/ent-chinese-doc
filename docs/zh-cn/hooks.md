@@ -1,8 +1,3 @@
----
-id: hooks
-title: 事件钩子
----
-
 `Hook` 选项允许在操作之前和之后添加自定义逻辑来改变图。
 
 ## 变更 (Mutation)
@@ -187,9 +182,9 @@ func (Card) Hooks() []ent.Hook {
 
 ## 钩子注册
 
-When using [**schema hooks**](#schema-hooks), there's a chance of a cyclic import between the schema package, and the generated ent package. To avoid this scenario, ent generates an `ent/runtime` package which is responsible for registering the schema-hooks at runtime.
+使用 [**schema hooks**](#schema-hooks) 时，schema 包和生成的 ent 包之间有可能循环导入。 为了避免这种情况，ent 生成一个 ent/runtime 包，它负责在运行时注册模式挂钩。
 
-:::important Users **MUST** import the `ent/runtime` in order to register the schema hooks. The package can be imported in the `main` package (close to where the database driver is imported), or in the package that creates the `ent.Client`.
+> 重要： 用户**必须**导入 `ent/runtime` 以注册模式挂钩（schema hooks)。 该包可以导入到 `main` 包中（靠近导入数据库驱动程序的位置），或者导入到创建 `ent.Client` 的包中。
 
 ```go
 import _ "<project>/ent/runtime"
@@ -198,9 +193,9 @@ import _ "<project>/ent/runtime"
 
 ## 评估顺序
 
-Hooks are called in the order they were registered to the client. Thus, `client.Use(f, g, h)` executes `f(g(h(...)))` on mutations.
+钩子按照它们在客户端注册的顺序被调用。 因此，`client.Use(f, g, h)` 对变更（mutation) 执行 `f(g(h(...)))`。
 
-Also note, that **runtime hooks** are called before **schema hooks**. That is, if `g`, and `h` were defined in the schema, and `f` was registered using `client.Use(...)`, they will be executed as follows: `f(g(h(...)))`.
+另请注意，**runtime hooks** 在 **schema hooks** 之前调用。 也就是说，如果在模式(schema)中定义了 `g` 和 `h`，并且使用 `client.Use(...)` 注册了 `f`，它们将按如下方式执行：`f(g(h( ...）））`。
 
 ## 钩子辅助工具
 
