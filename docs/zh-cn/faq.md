@@ -43,7 +43,7 @@
 
 #### 如何创建一个更变时校验器？
 
-要实现一个更变时校验器， 你既可以使用 [schema hooks](hooks.md#schema-hooks) 来验证应用于一个实体类型的更变， 也可以使用 [transaction hooks](transactions.md#hooks) 来验证应用于多个实体类型的更变 (好比一次GraphQL更变)。 举个例子：
+要实现一个更变时校验器， 你既可以使用 [schema hooks](./zh-cn/hooks.md#模式钩子schema-hooks) 来验证应用于一个实体类型的更变， 也可以使用 [transaction hooks](./zn-cn/transactions.md#钩子) 来验证应用于多个实体类型的更变 (好比一次GraphQL更变)。 举个例子：
 
 ```go
 // VersionHook是一个假的例子，它可以验证 "version" 字段
@@ -82,7 +82,7 @@ func VersionHook() ent.Hook {
 
 #### 如何编写一个审计日志的扩展？
 
-编写此扩展的推荐方式是使用 [ent.Mixin](schema-mixin.md)。 使用 `Fields` 选项来为所有引入该 mixed-schema 的 Schema 设置相同的字段，并使用 `Hooks` 选项来为所有正在使用这些 Schema 的变更操作附加一个钩子。 下面是一个例子，基于 [代码仓库 Issue 追踪器](https://github.com/ent/ent/issues/830) 中的讨论。
+编写此扩展的推荐方式是使用 [ent.Mixin](./zh-cn/schema-mixin.md)。 使用 `Fields` 选项来为所有引入该 mixed-schema 的 Schema 设置相同的字段，并使用 `Hooks` 选项来为所有正在使用这些 Schema 的变更操作附加一个钩子。 下面是一个例子，基于 [代码仓库 Issue 追踪器](https://github.com/ent/ent/issues/830) 中的讨论。
 
 ```go
 // AuditMixin 实现了 ent.Mixin，
@@ -175,11 +175,11 @@ users := client.User.
     AllX(ctx)
 ```
 
-更多例子，请到 [断言](predicates.md#custom-predicates) 页面，或者在代码仓库Issue跟踪器中搜索更多的高级例子，如 [issue-842](https://github.com/ent/ent/issues/842#issuecomment-707896368)。
+更多例子，请到 [断言](./zh-cn/predicates.md#custom-predicates) 页面，或者在代码仓库Issue跟踪器中搜索更多的高级例子，如 [issue-842](https://github.com/ent/ent/issues/842#issuecomment-707896368)。
 
 #### 如何将自定义的sql查询谓语添加到ent代码生成器的资源中?
 
-[template](templates.md)选项提供了扩展或者复写默认代码生成资源的能力 为了产生类型安全的查询谓语，[对于上述例子](#how-to-write-custom-predicates)使用如下模板选项实现相同效果：
+[template](./zh-cn/templates.md)选项提供了扩展或者复写默认代码生成资源的能力 为了产生类型安全的查询谓语，[对于上述例子](#how-to-write-custom-predicates)使用如下模板选项实现相同效果：
 
 ```gotemplate
 {{/* 添加了"<F>Glob"谓语的模板作用于所有的string字段 */}}
@@ -202,7 +202,7 @@ users := client.User.
 
 #### 如何在 PostgreSQL 中定义一个网络地址字段？
 
-[GoType](schema-fields.md#go-type) 和 [SchemaType](schema-fields.md#database-type) 选项允许用户定义数据库特定字段。 例如，要定义 [`macaddr`](https://www.postgresql.org/docs/13/datatype-net-types.html#DATATYPE-MACADDR) 字段，请使用以下配置：
+[GoType](./zh-cn/schema-fields.md#go-type) 和 [SchemaType](./zh-cn/schema-fields.md#database-type) 选项允许用户定义数据库特定字段。 例如，要定义 [`macaddr`](https://www.postgresql.org/docs/13/datatype-net-types.html#DATATYPE-MACADDR) 字段，请使用以下配置：
 
 ```go
 func (T) Fields() []ent.Field {
@@ -373,7 +373,7 @@ func (User) Mixin() []ent.Mixin {
 
 [xid](https://github.com/rs/xid) 是一个全局唯一ID生成库， 使用[Mongo Object ID](https://docs.mongodb.org/manual/reference/object-id/) 算法无需配置即可生成12字节，20个字符的 ID . xid 来自于 [database/sql](https://pkg.go.dev/database/sql) `sql.Scanner` 和 `driver.Valuer` 接口。
 
-要存储 XID 在 string 字段需要  [GoType](schema-fields.md#go-type) 配置:
+要存储 XID 在 string 字段需要  [GoType](./zh-cn/schema-fields.md#go-类型) 配置:
 
 ```go
 // Fields of type T.
@@ -386,7 +386,7 @@ func (T) Fields() []ent.Field {
 }
 ```
 
-或者一个可重用的 [Mixin](schema-mixin.md) :
+或者一个可重用的 [Mixin](./zh-cn/schema-mixin.md) :
 
 ```go
 package schema
@@ -430,7 +430,7 @@ func (User) Mixin() []ent.Mixin {
 
 #### 如何在MySQL中定义一个特定的数据类型?
 
-[GoType](schema-fields.md#go-type) 和 [SchemaType](schema-fields.md#database-type) 选项允许用户定义特定于数据库的字段. 例如为了定义 [`POINT`](https://dev.mysql.com/doc/refman/8.0/en/spatial-type-overview.html) 字段, 使用以下的配置:
+[GoType](./zh-cn/schema-fields.md#go-type) 和 [SchemaType](./zh-cn/schema-fields.md#database-type) 选项允许用户定义特定于数据库的字段. 例如为了定义 [`POINT`](https://dev.mysql.com/doc/refman/8.0/en/spatial-type-overview.html) 字段, 使用以下的配置:
 
 ```go
 // Fields of the Location.
@@ -517,13 +517,14 @@ Ent 支持使用自定义模板为已生成的类型进行扩展 (包括全局�
 {{- end -}}
 ```
 
-#### How to extend the generated builders?
+#### 如何扩展生成的构建器？
 
-See the *[Injecting External Dependencies](code-gen.md#external-dependencies)* section, or follow the example on [GitHub](https://github.com/ent/ent/tree/master/examples/entcpkg).
+查看 *[外部依赖](./zh-cn/code-gen.md#外部依赖)*, 或者查看例子 [GitHub](https://github.com/ent/ent/tree/master/examples/entcpkg).
 
-#### How to store Protobuf objects in a BLOB column?
+#### 如何将 Protobuf 对象存储在 BLOB 列中？
 
-Assuming we have a Protobuf message defined:
+假设我们定义了一个 Protobuf 消息：
+
 ```protobuf
 syntax = "proto3";
 
@@ -536,7 +537,7 @@ message Hi {
 }
 ```
 
-We add receiver methods to the generated protobuf struct such that it implements [ValueScanner](https://pkg.go.dev/entgo.io/ent/schema/field#ValueScanner)
+我们将接收器方法添加到生成的 protobuf 结构中，使其实现 [ValueScanner](https://pkg.go.dev/entgo.io/ent/schema/field#ValueScanner)
 
 ```go
 func (x *Hi) Value() (driver.Value, error) {
@@ -557,7 +558,7 @@ func (x *Hi) Scan(src any) error {
 }
 ```
 
-We add a new `field.Bytes` to our schema, setting the generated protobuf struct as its underlying `GoType`:
+我们向我们的模式（schema）添加一个新的“field.Bytes”，将生成的 protobuf 结构设置为其底层的“GoType”：
 
 ```go
 // Fields of the Message.
@@ -569,7 +570,7 @@ func (Message) Fields() []ent.Field {
 }
 ```
 
-Test that it works:
+测试它是否有效：
 
 ```go
 package main
@@ -600,9 +601,9 @@ func TestMain(t *testing.T) {
 }
 ```
 
-#### How to add `CHECK` constraints to table?
+#### 如何向表添加 `CHECK` 约束？
 
-The [`entsql.Annotation`](schema-annotations.md) option allows adding custom `CHECK` constraints to the `CREATE TABLE` statement. In order to add `CHECK` constraints to your schema, use the following example:
+[`entsql.Annotation`](./zh-cn/schema-annotations.md) 选项允许将自定义的 `CHECK` 约束添加到 `CREATE TABLE` 语句。 为了向您的模式添加“CHECK”约束，请使用以下示例：
 
 ```go
 func (User) Annotations() []schema.Annotation {
@@ -623,10 +624,9 @@ func (User) Annotations() []schema.Annotation {
 }
 ```
 
-#### How to define a custom precision numeric field?
+#### 如何定义自定义精度数值字段？
 
-Using [GoType](schema-fields.md#go-type) and [SchemaType](schema-fields.md#database-type) it is possible to define custom precision numeric fields. For example, defining a field that uses [big.Int](https://pkg.go.dev/math/big).
-
+使用 [GoType](./zh-cn/schema-fields.md#go-类型) 和 [SchemaType](./zh-cn/schema-fields.md#数据库字段类型) 可以定义自定义精度数字字段。 例如，定义一个使用 [big.Int](https://pkg.go.dev/math/big) 的字段。
 ```go
 func (T) Fields() []ent.Field {
     return []ent.Field{
@@ -662,11 +662,11 @@ func (b *BigInt) Value() (driver.Value, error) {
 }
 ```
 
-#### How to configure two or more `DB` to separate read and write?
+#### 如何配置两个或多个`DB`来实现读写分离？
 
-You can wrap the `dialect.Driver` with your own driver and implement this logic. For example.
+你可以用你自己的驱动程序包装 `dialect.Driver` 并实现这个逻辑。 例如。
 
-You can extend it, add support for multiple read replicas and add some load-balancing magic.
+您可以扩展它，添加对多个只读副本的支持并添加一些负载均衡算法。
 
 ```go
 func main() {
@@ -722,11 +722,11 @@ func (d *multiDriver) Close() error {
 }
 ```
 
-#### How to change the character set and/or collation of a MySQL table?
+#### 如何更改 MySQL 表的字符集和/或排序规则？
 
-By default for MySQL the character set `utf8mb4` is used and the collation of `utf8mb4_bin`. However if you'd like to change the schema's character set and/or collation you need to use an annotation.
+默认情况下，MySQL 使用字符集 utf8mb4 和 utf8mb4_bin 的排序规则。 但是，如果您想更改模式的字符集和/或排序规则，则需要使用注释。
 
-Here's an example where we set the character set to `ascii` and the collation to `ascii_general_ci`.
+这是我们将字符集设置为 ascii 并将排序规则设置为 ascii_general_ci 的示例。
 
 ```go
 // Annotations of the Entity.

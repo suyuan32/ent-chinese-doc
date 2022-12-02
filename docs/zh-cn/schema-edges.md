@@ -1080,7 +1080,7 @@ func (Pet) Edges() []ent.Edge {
 }
 ```
 
-了解更多 [template doc](templates.md#annotations).
+了解更多 [template doc](./zh-cn/templates.md#annotations).
 
 ## 命名规范
 

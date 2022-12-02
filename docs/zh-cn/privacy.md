@@ -2,27 +2,27 @@ schema中的`Policy`选项允许为数据库中的查询和可变实体进行隐
 
 ![gopher-privacy](https://entgo.io/images/assets/gopher-privacy-opacity.png)
 
-The main advantage of the privacy layer is that, you write the privacy policy **once** (in the schema), and it is **always** evaluated. 无论你的代码在何处执行查询和更改，它都要经过隐私层。
+隐私层的主要优点是，您只需在schema中编写编写隐私政策**一次**，它就会**总是**被评估是否为隐私数据。无论你的代码在何处执行查询和更改，它都要经过隐私层。
 
-In this tutorial, we will start by going over the basic terms we use in the framework, continue with a section for configuring the policy feature to your project, and finish with a few examples.
+在本教程中，我们将首先介绍我们在框架中使用的基本术语，然后是为您的项目配置策略功能的部分，最后是一些示例。
 
 ## 基础术语
 
-### Policy
+### 策略（Policy）
 
-`ent.Policy`接口包含两个方法：`EvalQuery`和`EvalMutation`。 第一个方法用于定义读策略，第二个方法用于定义写策略。 每个策略可以包含0条或多条隐私规则(见后文)。 These rules are evaluated in the same order they are declared in the schema.
+`ent.Policy`接口包含两个方法：`EvalQuery`和`EvalMutation`。 第一个方法用于定义读策略，第二个方法用于定义写策略。 每个策略可以包含0条或多条隐私规则(见后文)。这些规则的评估顺序与它们在模式中声明的顺序相同。
 
-If all rules are evaluated without returning an error, the evaluation finishes successfully, and the executed operation gets access to the target nodes.
+如果对所有规则都进行了评估而没有返回错误，则评估成功完成，并且执行的操作可以访问目标节点。
 
 ![privacy-rules](https://entgo.io/images/assets/permission_1.png)
 
-However, if one of the evaluated rules returns an error or a `privacy.Deny` decision (see below), the executed operation returns an error, and it is cancelled.
+但是，如果某个评估的规则返回错误或决定执行“privacy.Deny”（见下文），则执行的操作返回错误，并被取消。
 
 ![privacy-deny](https://entgo.io/images/assets/permission_2.png)
 
-### Privacy Rules
+### 隐私规则（Privacy Rules）
 
-Each policy (mutation or query) includes one or more privacy rules. The function signature for these rules is as follows:
+每个策略（变更或查询）都包含一个或多个隐私规则。 这些规则的函数签名如下：
 
 ```go
 // EvalQuery defines the a read-policy rule.
@@ -32,25 +32,25 @@ func(Policy) EvalQuery(context.Context, Query) error
 func(Policy) EvalMutation(context.Context, Mutation) error
 ```
 
-### Privacy Decisions
+### 隐私决策操作（Privacy Decisions）
 
-There are three types of decision that can help you control the privacy rules evaluation.
+可以帮助您控制隐私规则评估的三种决策类型。
 
-- `privacy.Allow` - If returned from a privacy rule, the evaluation stops (next rules will be skipped), and the executed operation (query or mutation) gets access to the target nodes.
+- `privacy.Allow` - 如果从隐私规则返回，则评估停止（将跳过下一条规则），并且执行的操作（查询或变异）可以访问目标节点。
 
-- `privacy.Deny` - If returned from a privacy rule, the evaluation stops (next rules will be skipped), and the executed operation is cancelled. This equivalent to returning any error.
+- `privacy.Deny` - 如果从隐私规则返回，则评估停止（将跳过下一条规则），并取消执行的操作。 这相当于返回任何错误。
 
-- `privacy.Skip` - Skip the current rule, and jump to the next privacy rule. This equivalent to returning a `nil` error.
+- `privacy.Skip` - 跳过当前规则，跳转到下一条隐私规则。 这相当于返回一个 `nil` 错误。
 
 ![privacy-allow](https://entgo.io/images/assets/permission_3.png)
 
-Now that we’ve covered the basic terms, let’s start writing some code.
+现在我们已经介绍了基本术语，让我们开始编写一些代码。
 
-## Configuration
+## 配置（Configuration）
 
-In order to enable the privacy option in your code generation, enable the `privacy` feature with one of two options:
+为了在代码生成中启用隐私选项，请使用以下两个选项之一启用“隐私”功能：
 
-1\. If you are using the default go generate config, add `--feature privacy` option to the `ent/generate.go` file as follows:
+1\。 如果您使用默认的 go generate 配置，请将 `--feature privacy` 选项添加到 `ent/generate.go` 文件，如下所示：
 
 ```go
 package ent
@@ -58,9 +58,9 @@ package ent
 //go:generate go run -mod=mod entgo.io/ent/cmd/ent generate --feature privacy ./schema
 ```
 
-It is recommended to add the [`schema/snapshot`](features.md#auto-solve-merge-conflicts) feature-flag along with the `privacy` to enhance the development experience (e.g. `--feature privacy,schema/snapshot`)
+建议添加 [`schema/snapshot`](./zh-cn/features.md#自动解决合并冲突) feature-flag 以及 `privacy` 以增强开发体验（例如 `--feature privacy,schema/ 快照`)
 
-2\. If you are using the configuration from the GraphQL documentation, add the feature flag as follows:
+2\. 如果您使用的是 GraphQL 文档中的配置，请按如下方式添加功能标志：
 
 ```go {20}
 // Copyright 2019-present Facebook Inc. All rights reserved.
@@ -93,23 +93,22 @@ func main() {
 }
 ```
 
-:::important You should notice that, similar to [schema hooks](hooks.md#hooks-registration), if you use the **`Policy`** option in your schema, you **MUST** add the following import in the main package, because a circular import is possible between the schema package, and the generated ent package:
-
+> 重要： 你应该注意到，类似于 [schema hooks](hooks.md#钩子注册)，如果你在你的模式中使用 **`Policy`** 选项，你**必须**在 main 中添加以下导入 包，因为在模式包和生成的 ent 包之间可以循环导入：
 ```go
 import _ "<project>/ent/runtime"
 ```
-:::
 
-## Examples
 
-### Admin Only
+## 例子
 
-We start with a simple example of an application that lets any user read any data, and accepts mutations only from users with admin role. We will create 2 additional packages for the purpose of the examples:
+### 仅限管理员（Admin Only）
 
-- `rule` - for holding the different privacy rules in our schema.
-- `viewer` - for getting and setting the user/viewer who's executing the operation. In this simple example, it can be either a normal user or an admin.
+我们从一个简单的应用程序示例开始，该应用程序允许任何用户读取任何数据，并且只接受来自具有管理员角色的用户的更改。 为了示例的目的，我们将创建 2 个额外的包：
 
-After running the code-generation (with the feature-flag for privacy), we add the `Policy` method with 2 generated policy rules.
+- `rule` - 用于在我们的模式中保存不同的隐私规则。
+- `viewer` - 用于获取和设置执行操作的用户/查看者。 在这个简单的示例中，它可以是普通用户或管理员。
+
+运行代码生成（带有隐私功能标志）后，我们添加带有 2 个生成的策略规则的 `Policy` 方法。
 
 ```go title="examples/privacyadmin/ent/schema/user.go"
 package schema
@@ -139,7 +138,7 @@ func (User) Policy() ent.Policy {
 }
 ```
 
-We defined a policy that rejects any mutation and accepts any query. However, as mentioned above, in this example, we accept mutations only from viewers with admin role. Let's create 2 privacy rules to enforce this:
+我们定义了一个拒绝任何变更（mutation）并接受任何查询的策略。 然而，如上所述，在这个例子中，我们只接受来自具有管理员角色的查看者的变更（mutation）。 让我们创建 2 条隐私规则来执行此操作：
 
 ```go title="examples/privacyadmin/rule/rule.go"
 package rule
@@ -177,7 +176,7 @@ func AllowIfAdmin() privacy.QueryMutationRule {
 }
 ```
 
-As you can see, the first rule `DenyIfNoViewer`, makes sure every operation has a viewer in its context, otherwise, the operation rejected. The second rule `AllowIfAdmin`, accepts any operation from viewer with admin role. Let's add them to the schema, and run the code-generation:
+如您所见，第一条规则“DenyIfNoViewer”确保每个操作在其上下文中都有一个查看器，否则操作将被拒绝。 第二条规则“AllowIfAdmin”，接受来自具有管理员角色的查看者的任何操作。 让我们将它们添加到Schema中，并运行代码生成：
 
 ```go title="examples/privacyadmin/ent/schema/user.go"
 // Policy defines the privacy policy of the User.
@@ -195,9 +194,9 @@ func (User) Policy() ent.Policy {
 }
 ```
 
-Since we define the `DenyIfNoViewer` first, it will be executed before all other rules, and accessing the `viewer.Viewer` object is safe in the `AllowIfAdmin` rule.
+由于我们首先定义了 `DenyIfNoViewer`，它将在所有其他规则之前执行，并且访问 `viewer.Viewer` 对象在 `AllowIfAdmin` 规则中是安全的。
 
-After adding the rules above and running the code-generation, we expect the privacy-layer logic to be applied on `ent.Client` operations.
+添加上述规则并运行代码生成后，我们希望将隐私层逻辑应用于“ent.Client”操作。
 
 ```go title="examples/privacyadmin/example_test.go"
 func Do(ctx context.Context, client *ent.Client) error {
@@ -226,9 +225,9 @@ func Do(ctx context.Context, client *ent.Client) error {
 }
 ```
 
-### Decision Context
+### 决策上下文（Decision Context）
 
-Sometimes, we want to bind a specific privacy decision to the `context.Context`. In cases like this, we can use the `privacy.DecisionContext` function to create a new context with a privacy decision attached to it.
+有时，我们想将特定的隐私决定绑定到 `context.Context`。 在这种情况下，我们可以使用 `privacy.DecisionContext` 函数创建一个新的上下文，并附加一个隐私决策。
 
 ```go title="examples/privacyadmin/example_test.go"
 func Do(ctx context.Context, client *ent.Client) error {
@@ -241,15 +240,15 @@ func Do(ctx context.Context, client *ent.Client) error {
 }
 ```
 
-The full example exists in [GitHub](https://github.com/ent/ent/tree/master/examples/privacyadmin).
+完整的例子存在于 [GitHub](https://github.com/ent/ent/tree/master/examples/privacyadmin).
 
-### Multi Tenancy
+### 多租户（Multi Tenancy）
 
-In this example, we're going to create a schema with 3 entity types - `Tenant`, `User` and `Group`. The helper packages `viewer` and `rule` (as mentioned above) also exist in this example to help us structure the application.
+在此示例中，我们将创建一个包含 3 种实体类型的模式 - `Tenant`、`User` 和 `Group`。 帮助程序包 `viewer` 和 `rule`（如上所述）也存在于此示例中，以帮助我们构建应用程序。
 
 ![tenant-example](https://entgo.io/images/assets/tenant_medium.png)
 
-Let's start building this application piece by piece. We begin by creating 3 different schemas (see the full code [here](https://github.com/ent/ent/tree/master/examples/privacytenant/ent/schema)), and since we want to share some logic between them, we create another [mixed-in schema](schema-mixin.md) and add it to all other schemas as follows:
+让我们开始一点一点地构建这个应用程序。 我们首先创建 3 个不同的模式 (完整代码 [here](https://github.com/ent/ent/tree/master/examples/privacytenant/ent/schema)), 因为我们想在它们之间共享一些逻辑，所以我们创建了另一个 [mixed-in schema](schema-mixin.md) 并将其添加到所有其他模式(schema)，如下所示：
 
 ```go title="examples/privacytenant/ent/schema/mixin.go"
 // BaseMixin for all schemas in the graph.
@@ -285,9 +284,9 @@ func (Tenant) Mixin() []ent.Mixin {
 }
 ```
 
-As explained in the first example, the `DenyIfNoViewer` privacy rule, denies the operation if the `context.Context` does not contain the `viewer.Viewer` information.
+如第一个示例中所述，如果 context.Context 不包含 viewer.Viewer 信息，则 `DenyIfNoViewer` 隐私规则会拒绝操作。
 
-Similar to the previous example, we want add a constraint that only admin users can create tenants (and deny otherwise). We do it by copying the `AllowIfAdmin` rule from above, and adding it to the `Policy` of the `Tenant` schema:
+与前面的示例类似，我们要添加一个约束，即只有管理员用户才能创建租户（否则拒绝）。 我们通过复制上面的 `AllowIfAdmin` 规则，并将其添加到 `Tenant` 模式的 `Policy` 来实现：
 
 ```go title="examples/privacytenant/ent/schema/tenant.go"
 // Policy defines the privacy policy of the User.
@@ -303,7 +302,7 @@ func (Tenant) Policy() ent.Policy {
 }
 ```
 
-Then, we expect the following code to run successfully:
+然后，我们期望下面的代码能够成功运行：
 
 ```go title="examples/privacytenant/example_test.go"
 
@@ -342,7 +341,7 @@ func Example_CreateTenants(ctx context.Context, client *ent.Client) {
 }
 ```
 
-We continue by adding the rest of the edges in our data-model (see image above), and since both `User` and `Group` have an edge to the `Tenant` schema, we create a shared [mixed-in schema](schema-mixin.md) named `TenantMixin` for this:
+我们继续在我们的数据模型中添加其余的边缘(edge)（见上图），并且由于“用户”和“组”都具有“租户”模式的边缘(edge)，我们创建了一个共享的[混合模式] (schema-mixin.md) 为此命名为“TenantMixin”：
 
 ```go title="examples/privacytenant/ent/schema/mixin.go"
 // TenantMixin for embedding the tenant info in different schemas.
@@ -370,11 +369,11 @@ func (TenantMixin) Edges() []ent.Edge {
 }
 ```
 
-#### Filter Rules
+#### 过滤规则 (Filter Rules)
 
-Next, we may want to enforce a rule that will limit viewers to only query groups and users that are connected to the tenant they belong to. For use cases like this, Ent has an additional type of privacy rule named `Filter`. We can use `Filter` rules to filter out entities based on the identity of the viewer. Unlike the rules we previously discussed, `Filter` rules can limit the scope of the queries a viewer can make, in addition to returning privacy decisions.
+接下来，我们可能想要执行一个规则，将查看者限制为仅查询与其所属租户相关联的组和用户。 对于这样的用例，Ent 有一种名为“Filter”的额外隐私规则。 我们可以使用“过滤器”规则根据查看者的身份过滤掉实体。 与我们之前讨论的规则不同，“过滤器”规则除了返回隐私决策外，还可以限制查看者可以进行的查询范围。
 
-:::info Note The privacy filtering option needs to be enabled using the [`entql`](features.md#entql-filtering) feature-flag (see instructions [above](#configuration)). :::
+> 注意需要使用 [`entql`](./zh-cn/features.md#entql过滤) 功能标志启用隐私过滤选项（参见说明 [above](#configuration)）。
 
 ```go title="examples/privacytenant/rule/rule.go"
 // FilterTenantRule is a query/mutation rule that filters out entities that are not in the tenant.
@@ -402,7 +401,7 @@ func FilterTenantRule() privacy.QueryMutationRule {
 }
 ```
 
-After creating the `FilterTenantRule` privacy rule, we add it to the `TenantMixin` to make sure **all schemas** that use this mixin, will also have this privacy rule.
+创建“FilterTenantRule”隐私规则后，我们将其添加到“TenantMixin”中，以确保**所有使用此 mixin 的模式**也将具有此隐私规则。
 
 ```go title="examples/privacytenant/ent/schema/mixin.go"
 // Policy for all schemas that embed TenantMixin.
@@ -411,7 +410,7 @@ func (TenantMixin) Policy() ent.Policy {
 }
 ```
 
-Then, after running the code-generation, we expect the privacy-rules to take effect on the client operations.
+然后，在运行代码生成之后，我们希望隐私规则对客户端操作生效。
 
 ```go title="examples/privacytenant/example_test.go"
 
@@ -493,7 +492,7 @@ func Example_TenantView(ctx context.Context, client *ent.Client) {
 }
 ```
 
-We finish our example with another privacy-rule named `DenyMismatchedTenants` on the `Group` schema. The `DenyMismatchedTenants` rule rejects group creation if the associated users do not belong to the same tenant as the group.
+我们在 `Group` 模式(schema)上使用另一个名为 `DenyMismatchedTenants` 的隐私规则来结束我们的示例。 如果关联用户不属于与组相同的租户，则“DenyMismatchedTenants”规则会拒绝创建组。
 
 ```go title="examples/privacytenant/rule/rule.go"
 // DenyMismatchedTenants is a rule that runs only on create operations and returns a deny
@@ -529,7 +528,7 @@ func DenyMismatchedTenants() privacy.MutationRule {
 }
 ```
 
-We add this rule to the `Group` schema and run code-generation.
+我们将此规则添加到“Group”模式(schema)并运行代码生成。
 
 ```go title="examples/privacytenant/ent/schema/group.go"
 // Policy defines the privacy policy of the Group.
@@ -547,7 +546,7 @@ func (Group) Policy() ent.Policy {
 }
 ```
 
-Again, we expect the privacy-rules to take effect on the client operations.
+同样，我们希望隐私规则对客户端操作生效。
 
 ```go title="examples/privacytenant/example_test.go"
 func Example_DenyMismatchedTenants(ctx context.Context, client *ent.Client) {
@@ -593,7 +592,7 @@ func Example_DenyMismatchedTenants(ctx context.Context, client *ent.Client) {
 }
 ```
 
-In some cases, we want to reject user operations on entities that do not belong to their tenant **without loading these entities from the database** (unlike the `DenyMismatchedTenants` example above). To achieve this, we rely on the `FilterTenantRule` rule to add its filtering on mutations as well, and expect operations to fail with `NotFoundError` in case the `tenant_id` column does not match the one stored in the viewer-context.
+在某些情况下，我们希望拒绝用户对不属于其租户的实体的操作**而不从数据库加载这些实体**（与上面的“DenyMismatchedTenants”示例不同）。 为实现这一目标，我们还依赖 `FilterTenantRule` 规则来添加其对变更（mutation）的过滤，并期望操作失败并返回 `NotFoundError`，以防 `tenant_id` 列与存储在查看器上下文中的列不匹配。
 
 ```go title="examples/privacytenant/example_test.go"
 func Example_DenyMismatchedView(ctx context.Context, client *ent.Client) {

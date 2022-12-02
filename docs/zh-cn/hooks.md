@@ -189,7 +189,6 @@ func (Card) Hooks() []ent.Hook {
 ```go
 import _ "<project>/ent/runtime"
 ```
-:::
 
 ## 评估顺序
 

@@ -1,6 +1,6 @@
 ### 简介
 
-Ent [扩展API（Extension API）](https://pkg.go.dev/entgo.io/ent/entc#Extension) 用于实现代码生成功能，配合 [代码生成钩子(codegen hooks)](code-gen.md#code-generation-hooks), [模板(templates)](templates.md) 和 [注解(annotations)](templates.md#annotations) 来创建可重用的组件，为 Ent 的核心添加丰富功能. 例如, Ent 的工具 [entgql plugin](https://pkg.go.dev/entgo.io/contrib/entgql#Extension) 暴露了 `Extension` 接口用于从 Ent Schema自动生成 GraphQL 服务器.
+Ent [扩展API（Extension API）](https://pkg.go.dev/entgo.io/ent/entc#Extension) 用于实现代码生成功能，配合 [代码生成钩子(codegen hooks)](./zh-cn/code-gen.md#code-generation-hooks), [模板(templates)](templates.md) 和 [注解(annotations)](templates.md#annotations) 来创建可重用的组件，为 Ent 的核心添加丰富功能. 例如, Ent 的工具 [entgql plugin](https://pkg.go.dev/entgo.io/contrib/entgql#Extension) 暴露了 `Extension` 接口用于从 Ent Schema自动生成 GraphQL 服务器.
 
 ### 定义一个新的扩展
 
@@ -44,7 +44,7 @@ type GreetExtension struct {
 
 ### 添加模板
 
-Ent 支持添加模板 [external templates](templates.md) 用于在代码生成期间添加新方法. 要将此类外部模板捆绑在扩展上，请实现 `Templates` 方法:
+Ent 支持添加模板 [external templates](./zh-cn/templates.md) 用于在代码生成期间添加新方法. 要将此类外部模板捆绑在扩展上，请实现 `Templates` 方法:
 ```gotemplate title="templates/greet.tmpl"
 {{/* Tell Intellij/GoLand to enable the autocompletion based on the *gen.Graph type. */}}
 {{/* gotype: entgo.io/ent/entc/gen.Graph */}}
@@ -110,7 +110,7 @@ func ({{ $receiver }} *{{ $n.Name }}) Greet() string {
 
 ### 添加钩子
 
-entc 包提供了一个选项在代码生成阶段添加一个 [钩子（hooks）](code-gen.md#code-generation-hooks) (middlewares) 列表. 此选项非常适合为Schema添加自定义验证器，或使用图形模式(Graph schema)生成额外的资源。 要将代码生成钩子与您的扩展捆绑在一起，请实现“Hooks”方法：
+entc 包提供了一个选项在代码生成阶段添加一个 [钩子（hooks）](./zh-cn/code-gen.md#code-generation-hooks) (middlewares) 列表. 此选项非常适合为Schema添加自定义验证器，或使用图形模式(Graph schema)生成额外的资源。 要将代码生成钩子与您的扩展捆绑在一起，请实现“Hooks”方法：
 
 ```go
 func (s *GreetExtension) Hooks() []gen.Hook {

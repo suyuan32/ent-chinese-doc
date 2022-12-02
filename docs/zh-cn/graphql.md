@@ -62,7 +62,7 @@ go generate ./...
 
 为了在 [GraphQL 解析器](https://gqlgen.com/reference/resolvers/) 中使用新生成的 `ent.Noder` 接口，将 `Node` 方法添加到查询解析器，并查看 [ 配置](#gql-configuration) 部分以了解如何使用它。
 
-如果您在架构迁移中使用 [Universal IDs](migrate.md#universal-ids) 选项，则 NodeType 派生自 id 值，可以按如下方式使用：
+如果您在架构迁移中使用 [Universal IDs](./zh-cn/migrate.md#universal-ids) 选项，则 NodeType 派生自 id 值，可以按如下方式使用：
 
 ```go
 func (r *queryResolver) Node(ctx context.Context, id int) (ent.Noder, error) {
@@ -314,7 +314,7 @@ func (r *todoResolver) Children(ctx context.Context, obj *ent.Todo) ([]*ent.Todo
 
 ## 事务的变更（Transactional Mutations）
 
-`entgql.Transactioner` 处理程序执行事务中的每个 GraphQL 变更。 解析器的注入客户端是一个[事务性 ent.Client](transactions.md#transactional-client)。 因此，不需要更改使用 ent.Client 的代码。 要使用它，请按照下列步骤操作：
+`entgql.Transactioner` 处理程序执行事务中的每个 GraphQL 变更。 解析器的注入客户端是一个[事务性 ent.Client](./zh-cn/transactions.md#transactional-client)。 因此，不需要更改使用 ent.Client 的代码。 要使用它，请按照下列步骤操作：
 
 1\. 在 GraphQL 服务器初始化中，使用 entgql.Transactioner 处理程序，如下所示：
 

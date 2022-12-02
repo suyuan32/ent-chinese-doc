@@ -834,7 +834,7 @@ func (User) Fields() []ent.Field {
 }
 ```
 
-了解更多 [模板文档](templates.md#annotations).
+了解更多 [模板文档](./zh-cn/templates.md#annotations).
 
 ## 命名转换
 

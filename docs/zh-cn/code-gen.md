@@ -18,7 +18,7 @@ go run -mod=mod entgo.io/ent/cmd/ent init User Pet
 
 ## 生成资源文件
 
-每次添加或修改 [fields](schema-fields.md) 和 [edges](schema-edges) 后, 你都需要生成新的实体. 在项目的根目录执行 `ent generate`或直接执行`go generate`命令重新生成资源文件:
+每次添加或修改 [fields](./zh-cn/schema-fields.md) 和 [edges](./zh-cn/schema-edges.md) 后, 你都需要生成新的实体. 在项目的根目录执行 `ent generate`或直接执行`go generate`命令重新生成资源文件:
 
 
 ```bash
@@ -28,11 +28,11 @@ go generate ./ent
 `generate`将会按照schema模板生成生成以下资源:
 
 - `Client` 和 `Tx` 对象用于与图的交互。
-- 每个schema对应的增删改查， 查看[CRUD](crud.mdx)了解更多信息。
+- 每个schema对应的增删改查， 查看[CRUD](./zh-cn/crud.md)了解更多信息。
 - 每个schema的实体对象(Go结构体)。
 - 含常量和查询条件的包，用于与生成器交互。
-- 用于数据迁移的`migrate`包。 查看 [迁移](migrate.md) 获取更多信息。
-- 一个在变更前执行的 `hook` 包 查看 [钩子](hooks.md) 获取更多信息。
+- 用于数据迁移的`migrate`包。 查看 [迁移](./zh-cn/migrate.md) 获取更多信息。
+- 一个在变更前执行的 `hook` 包 查看 [钩子](./zh-cn/hooks.md) 获取更多信息。
 
 ## `entc`和`ent`之间的版本兼容性
 
@@ -96,7 +96,7 @@ Flags:
 go run -mod=mod entgo.io/ent/cmd/ent generate --template <dir-path> --template glob="path/to/*.tmpl" ./ent/schema
 ```
 
-更多信息和示例可在 [外部模板](templates.md) 中找到。
+更多信息和示例可在 [外部模板](./zh-cn/templates.md) 中找到。
 
 ## 把 `entc` 作为库使用
 
@@ -272,4 +272,4 @@ func Example_Deps() {
 
 `entc` 软件包提供了一系列代码生成特性，可以自行选择使用。
 
-欲了解更多信息，请查看 [特性开关](features.md)。
+欲了解更多信息，请查看 [特性开关](./zh-cn/features.md)。

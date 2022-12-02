@@ -141,7 +141,7 @@ func Do(ctx context.Context, client *ent.Client) error {
 
 ## 边(Edge)上索引
 
-目前 `Edges` 字段后面通常跟着 `Fields` 字段. 然而复合索引需要考虑顺序， 查看 [Edge Fields](schema-edges#edge-field)了解更多.
+目前 `Edges` 字段后面通常跟着 `Fields` 字段. 然而复合索引需要考虑顺序， 查看 [Edge Fields](./zh-cn/schema-edges#edge-field)了解更多.
 
 ```go
 // Card holds the schema definition for the Card entity.
@@ -176,7 +176,7 @@ func (Card) Indexes() []ent.Index {
 
 ## 方言支持 (Dialect Support)
 
-Dialect 功能需要配合注解 [annotations](schema-annotations.md). 例如为了实现在 Mysql 中的 [索引前缀](https://dev.mysql.com/doc/refman/8.0/en/column-indexes.html#column-indexes-prefix)， 需要如下配置 :
+Dialect 功能需要配合注解 [annotations](./zh-cn/schema-annotations.md). 例如为了实现在 Mysql 中的 [索引前缀](https://dev.mysql.com/doc/refman/8.0/en/column-indexes.html#column-indexes-prefix)， 需要如下配置 :
 
 ```go
 // Indexes of the User.

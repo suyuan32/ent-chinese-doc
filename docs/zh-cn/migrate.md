@@ -102,7 +102,7 @@ func main() {
 
 ## 离线模式
 
-**由于Atlas很快成为默认迁移引擎，离线迁移将被替换为[版本迁移](versioned-migrations.mdx) 。**
+**由于Atlas很快成为默认迁移引擎，离线迁移将被替换为[版本迁移](./zh-cn/versioned-migrations.md) 。**
 
 离线模式允许您在数据库执行schema更改之前写到 `io.Writer` 中。 它有助于在数据库执行之前验证SQL命令，或获取一个 SQL 脚本 手动运行。
 

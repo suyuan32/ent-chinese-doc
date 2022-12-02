@@ -1,10 +1,10 @@
-正如 [介绍](code-gen.md) 部分所述，对 schemas 运行 `ent` 命令， 将生成以下资源：
+正如 [介绍](./zh-cn/code-gen.md) 部分所述，对 schemas 运行 `ent` 命令， 将生成以下资源：
 
 - `Client` 和 `Tx` 对象用于与图的交互。
-- 每个schema对应的增删改查生成器， 查看 [CRUD](crud.md) 了解更多信息。
+- 每个schema对应的增删改查生成器， 查看 [CRUD](./zh-cn/crud.md) 了解更多信息。
 - 每个schema的实体对象(Go结构体)。
 - 含常量和查询条件的包，用于与生成器交互。
-- 用于数据迁移的`migrate`包. 查看 [迁移](migrate.md) 获取更多信息。
+- 用于数据迁移的`migrate`包. 查看 [迁移](./zh-cn/migrate.md) 获取更多信息。
 
 ## 创建新的客户端
 
@@ -191,7 +191,7 @@ n, err := client.User.          // UserClient.
 
 ## 合并单个实体
 
-Ent 支持 [合并](https://en.wikipedia.org/wiki/Merge_(SQL)) 记录，使用 [`sql/upsert`](features.md#upsert) 功能标识。
+Ent 支持 [合并](https://en.wikipedia.org/wiki/Merge_(SQL)) 记录，使用 [`sql/upsert`](./zh-cn/features.md#upsert) 功能标识。
 
 ```go
 err := client.User.
@@ -281,7 +281,7 @@ id, err := client.User.
 // INSERT INTO "users" (...) VALUES (...) ON CONFLICT WHERE ... DO UPDATE SET ... WHERE ...
 ```
 
-:::info 由于 upsert API 是使用 `ON CONFLICT` 子句（和 MySQL 中的 `ON DUPLICATE KEY`）实现的， Ent 只对数据库执行一条语句，因此创建的 [hooks](hooks.md)应该只针对此类操作。 :::
+> 由于 upsert API 是使用 `ON CONFLICT` 子句（和 MySQL 中的 `ON DUPLICATE KEY`）实现的， Ent 只对数据库执行一条语句，因此创建的 [hooks](./zh-cn/hooks.md)应该只针对此类操作。 
 
 ## 合并多个实体
 
@@ -330,7 +330,7 @@ n, err := client.Post.
     Count(ctx)
 ```
 
-可以在 [下一节](traversals.md) 中找到更高级的遍历方式。
+可以在 [下一节](./zh-cn/traversals.md) 中找到更高级的遍历方式。
 
 ## 字段选择
 
@@ -435,7 +435,7 @@ _, err := client.File.
 
 ## 更新或创建 (Upsert)
 
-每个生成的节点类型都有突变类型。 例如，所有的 [`User` 构造器](crud.md#create-an-entity)， 共用同一个生成的 `UserMutation` 对象。 并且，所有构造器类型都实现了通用的 <a target="_blank" href="https://pkg.go.dev/entgo.io/ent?tab=doc#Mutation"> `ent.Mutation` </a> 接口。
+每个生成的节点类型都有突变类型。 例如，所有的 [`User` 构造器](./zh-cn/crud.md#create-an-entity)， 共用同一个生成的 `UserMutation` 对象。 并且，所有构造器类型都实现了通用的 <a target="_blank" href="https://pkg.go.dev/entgo.io/ent?tab=doc#Mutation"> `ent.Mutation` </a> 接口。
 
 如果想要编写通用的代码，例如在 `ent.UserCreate` 和 `ent.UserUpdate` 上使用相同的操作，请使用 `UserMutation` 对象。
 

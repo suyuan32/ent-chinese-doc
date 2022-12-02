@@ -128,7 +128,7 @@ func Do(ctx context.Context, client *ent.Client) {
 
 ## 钩子
 
-与[结构钩子](hooks.md#schema-hooks)和[运行时钩子](hooks.md#runtime-hooks)一样，钩子也可以注册在活跃的事务中，将会在`Tx.Commit`或者是`Tx.Rollback`时执行：
+与[结构钩子](./zh-cn/hooks.md#schema-hooks)和[运行时钩子](./zh-cn/hooks.md#runtime-hooks)一样，钩子也可以注册在活跃的事务中，将会在`Tx.Commit`或者是`Tx.Rollback`时执行：
 
 ```go
 func Do(ctx context.Context, client *ent.Client) error {
@@ -163,7 +163,7 @@ func Do(ctx context.Context, client *ent.Client) error {
 
 ## 隔离级别
 
-一些驱动程序支持调整事务的隔离级别。 如 [sql](sql-integration.md) 驱动, 你可以使用 `BeginTx` 方法实现.
+一些驱动程序支持调整事务的隔离级别。 如 [sql](./zh-cn/sql-integration.md) 驱动, 你可以使用 `BeginTx` 方法实现.
 
 ```go
 tx, err := client.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelRepeatableRead})
